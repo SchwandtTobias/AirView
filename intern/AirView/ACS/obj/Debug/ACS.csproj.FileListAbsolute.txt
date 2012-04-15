@@ -1,0 +1,7 @@
+C:\Users\Tobias Schwandt\Dropbox\Projekte\AirView\intern\AirView\ACS\bin\ACS.dll
+C:\Users\Tobias Schwandt\Dropbox\Projekte\AirView\intern\AirView\ACS\bin\ACS.pdb
+C:\Users\Tobias Schwandt\Dropbox\Projekte\AirView\intern\AirView\ACS\bin\ARDrone.Control.dll
+C:\Users\Tobias Schwandt\Dropbox\Projekte\AirView\intern\AirView\ACS\obj\Debug\ACS.csprojResolveAssemblyReference.cache
+C:\Users\Tobias Schwandt\Dropbox\Projekte\AirView\intern\AirView\ACS\obj\Debug\ACS.dll
+C:\Users\Tobias Schwandt\Dropbox\Projekte\AirView\intern\AirView\ACS\obj\Debug\ACS.pdb
+C:\Users\Tobias Schwandt\Dropbox\Projekte\AirView\intern\AirView\ACS\bin\ARDroneBasics.dll
