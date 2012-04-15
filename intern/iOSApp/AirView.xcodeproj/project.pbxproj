@@ -1,0 +1,294 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F355583814FFB55200026A10 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F355583714FFB55200026A10 /* UIKit.framework */; };
+		F355583A14FFB55200026A10 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F355583914FFB55200026A10 /* Foundation.framework */; };
+		F355583C14FFB55200026A10 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F355583B14FFB55200026A10 /* CoreGraphics.framework */; };
+		F355584214FFB55200026A10 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F355584014FFB55200026A10 /* InfoPlist.strings */; };
+		F355584414FFB55200026A10 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F355584314FFB55200026A10 /* main.m */; };
+		F355584814FFB55200026A10 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F355584714FFB55200026A10 /* AppDelegate.m */; };
+		F355584B14FFB55200026A10 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F355584914FFB55200026A10 /* MainStoryboard.storyboard */; };
+		F355584E14FFB55200026A10 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F355584D14FFB55200026A10 /* ViewController.m */; };
+		F355585914FFC52E00026A10 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F355585814FFC52E00026A10 /* Icon@2x.png */; };
+		F355585B14FFC53300026A10 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F355585A14FFC53300026A10 /* Icon.png */; };
+		F355585D14FFC6BE00026A10 /* white_zeb_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = F355585C14FFC6BE00026A10 /* white_zeb_logo.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		F355583314FFB55200026A10 /* AirView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirView.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F355583714FFB55200026A10 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		F355583914FFB55200026A10 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		F355583B14FFB55200026A10 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		F355583F14FFB55200026A10 /* AirView-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AirView-Info.plist"; sourceTree = "<group>"; };
+		F355584114FFB55200026A10 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F355584314FFB55200026A10 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		F355584514FFB55200026A10 /* AirView-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AirView-Prefix.pch"; sourceTree = "<group>"; };
+		F355584614FFB55200026A10 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		F355584714FFB55200026A10 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		F355584A14FFB55200026A10 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		F355584C14FFB55200026A10 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		F355584D14FFB55200026A10 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		F355585814FFC52E00026A10 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		F355585A14FFC53300026A10 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		F355585C14FFC6BE00026A10 /* white_zeb_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = white_zeb_logo.png; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F355583014FFB55200026A10 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F355583814FFB55200026A10 /* UIKit.framework in Frameworks */,
+				F355583A14FFB55200026A10 /* Foundation.framework in Frameworks */,
+				F355583C14FFB55200026A10 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F355582814FFB55200026A10 = {
+			isa = PBXGroup;
+			children = (
+				F355585A14FFC53300026A10 /* Icon.png */,
+				F355585814FFC52E00026A10 /* Icon@2x.png */,
+				F355585C14FFC6BE00026A10 /* white_zeb_logo.png */,
+				F355583D14FFB55200026A10 /* AirView */,
+				F355583614FFB55200026A10 /* Frameworks */,
+				F355583414FFB55200026A10 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F355583414FFB55200026A10 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F355583314FFB55200026A10 /* AirView.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F355583614FFB55200026A10 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F355583714FFB55200026A10 /* UIKit.framework */,
+				F355583914FFB55200026A10 /* Foundation.framework */,
+				F355583B14FFB55200026A10 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F355583D14FFB55200026A10 /* AirView */ = {
+			isa = PBXGroup;
+			children = (
+				F355584614FFB55200026A10 /* AppDelegate.h */,
+				F355584714FFB55200026A10 /* AppDelegate.m */,
+				F355584914FFB55200026A10 /* MainStoryboard.storyboard */,
+				F355584C14FFB55200026A10 /* ViewController.h */,
+				F355584D14FFB55200026A10 /* ViewController.m */,
+				F355583E14FFB55200026A10 /* Supporting Files */,
+			);
+			path = AirView;
+			sourceTree = "<group>";
+		};
+		F355583E14FFB55200026A10 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F355583F14FFB55200026A10 /* AirView-Info.plist */,
+				F355584014FFB55200026A10 /* InfoPlist.strings */,
+				F355584314FFB55200026A10 /* main.m */,
+				F355584514FFB55200026A10 /* AirView-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F355583214FFB55200026A10 /* AirView */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F355585114FFB55200026A10 /* Build configuration list for PBXNativeTarget "AirView" */;
+			buildPhases = (
+				F355582F14FFB55200026A10 /* Sources */,
+				F355583014FFB55200026A10 /* Frameworks */,
+				F355583114FFB55200026A10 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AirView;
+			productName = AirView;
+			productReference = F355583314FFB55200026A10 /* AirView.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F355582A14FFB55200026A10 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = Zebresel;
+			};
+			buildConfigurationList = F355582D14FFB55200026A10 /* Build configuration list for PBXProject "AirView" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = F355582814FFB55200026A10;
+			productRefGroup = F355583414FFB55200026A10 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F355583214FFB55200026A10 /* AirView */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F355583114FFB55200026A10 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F355584214FFB55200026A10 /* InfoPlist.strings in Resources */,
+				F355584B14FFB55200026A10 /* MainStoryboard.storyboard in Resources */,
+				F355585914FFC52E00026A10 /* Icon@2x.png in Resources */,
+				F355585B14FFC53300026A10 /* Icon.png in Resources */,
+				F355585D14FFC6BE00026A10 /* white_zeb_logo.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F355582F14FFB55200026A10 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F355584414FFB55200026A10 /* main.m in Sources */,
+				F355584814FFB55200026A10 /* AppDelegate.m in Sources */,
+				F355584E14FFB55200026A10 /* ViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		F355584014FFB55200026A10 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F355584114FFB55200026A10 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		F355584914FFB55200026A10 /* MainStoryboard.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F355584A14FFB55200026A10 /* en */,
+			);
+			name = MainStoryboard.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F355584F14FFB55200026A10 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		F355585014FFB55200026A10 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F355585214FFB55200026A10 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AirView/AirView-Prefix.pch";
+				INFOPLIST_FILE = "AirView/AirView-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		F355585314FFB55200026A10 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AirView/AirView-Prefix.pch";
+				INFOPLIST_FILE = "AirView/AirView-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F355582D14FFB55200026A10 /* Build configuration list for PBXProject "AirView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F355584F14FFB55200026A10 /* Debug */,
+				F355585014FFB55200026A10 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F355585114FFB55200026A10 /* Build configuration list for PBXNativeTarget "AirView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F355585214FFB55200026A10 /* Debug */,
+				F355585314FFB55200026A10 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F355582A14FFB55200026A10 /* Project object */;
+}
