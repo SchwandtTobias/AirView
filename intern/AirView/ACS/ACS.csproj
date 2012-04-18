@@ -72,9 +72,9 @@
     <Compile Include="ACS.svc.cs">
       <DependentUpon>ACS.svc</DependentUpon>
     </Compile>
-    <Compile Include="CArDrone.cs" />
+    <Compile Include="AirDevice\Devices\ArDrone\CArDrone.cs" />
     <Compile Include="IACS.cs" />
-    <Compile Include="IAirDevice.cs" />
+    <Compile Include="AirDevice\IAirDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

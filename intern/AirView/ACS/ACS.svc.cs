@@ -11,7 +11,7 @@ namespace ACS
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class CACService : IACS
     {
-        private IAirDevice m_device;
+        private IAirDevice m_device = new CArDrone();
 
         public CACService()
         {
