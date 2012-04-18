@@ -65,27 +65,29 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ACS.svc" />
-    <Content Include="Web.config" />
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="..\..\..\src\ACS\AirDevice\Devices\ArDrone\CArDrone.cs">
+      <Link>AirDevice\Devices\AR.Drone\CArDrone.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\src\ACS\AirDevice\IAirDevice.cs">
+      <Link>AirDevice\IAirDevice.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\src\ACS\IACS.cs">
+      <Link>IACS.cs</Link>
+    </Compile>
     <Compile Include="ACS.svc.cs">
       <DependentUpon>ACS.svc</DependentUpon>
     </Compile>
-    <Compile Include="AirDevice\Devices\ArDrone\CArDrone.cs" />
-    <Compile Include="IACS.cs" />
-    <Compile Include="AirDevice\IAirDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ACS.svc" />
+    <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -103,7 +105,7 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerPort>1107</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:1092/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
