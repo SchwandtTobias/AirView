@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.17.custom.css" rel="stylesheet" />
+
+<style type="text/css">
+* {
+	padding: 0;
+	margin: 0;
+	
+}
+
+html {
+font-family: Segoe UI,Tahoma,Arial,Verdana,sans-serif;
+
+}
+
+div#sendRequest,
+div#connector
+{
+	cursor: pointer;
+}
+
+div#sendRequest{
+	float: right;
+	background:url('img/disable.gif') no-repeat;
+	width: 144px;
+	height: 120px;
+	margin-right: 20px;
+}
+
+div#connector {
+	float: right;
+	background:url('img/connect.png') no-repeat;
+	width: 144px;
+	height: 120px;
+	margin-right: 20px;
+}
+
+div#sendRequest.disable
+{
+	background:url('img/disable.png') no-repeat;
+}
+
+div#connector.disconnect
+{
+	background:url('img/disconnect.png') no-repeat;
+}
+
+div#sendRequest.senddata 
+{
+	background:url('img/sending_data.png') no-repeat;
+}
+
+div#sendRequest.stop_sending 
+{
+	background:url('img/stop_sending.gif') no-repeat;
+}
+
+.footer_links a {
+	font-size: 70%;
+	color: #000;
+	text-decoration: none;
+}
+
+</style>
+	
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.17.custom.min.js"></script>
+<script src="js/script.js" type="application/javascript"></script>
+
+
+
+<title>Zebresel AirView</title>
+</head>
+<body style="background-color: #ebebeb;">
+<div style="width: 960px; margin: 0 auto; height:100%; background-color: #FFF;">
+    <div style="height: 26px; background-color: #464646;">&nbsp;</div>
+    
+    <img src="img/microsoft_gray.png"  style="float: left; margin-left: 20px; margin-top: 25px;"/>
+    <div style="clear: both;">&nbsp;</div>
+      
+    <div style="width: 350px; float: left;">
+    	<div style=" margin: 20px 20px 20px 20px; padding: 20px; background-color: #27515f; color: #fff;">
+            <img src="img/mikrokoptersteuerung.png" />
+            <br /><br />
+            <div id="nick"></div>&nbsp;<div id="nick_val">Nick: 140</div><br />
+            <div id="roll"></div>&nbsp;<div id="roll_val">Roll: 140</div>
+         </div>
+        
+        <div id="sendRequest" type="button" class="disable">&nbsp;</div>
+        <div id="connector" type="button" value="Connect"></div>
+        
+        <div style="clear: both;"></div>
+    </div>
+    
+    <div style="width: 550px; margin-top: 20px; padding: 20px; float: left; background-color: #2da0a3;">
+    <img src="img/livebild.png" />
+        <iframe src="http://192.168.1.1:8080/jsfs.html" width="100%" height="480px" frameborder="0" style="margin-top: 20px; -moz-transform:rotate(180deg);  transform:rotate(180deg);"></iframe>
+    </div>
+    <div style="clear: both;">&nbsp;</div>
+                
+ <br />
+<div id="ctl00_ctl19" class="hpFtr" bi:type="hpFooter">    
+    <div class="hpFtr_Outer" style="float: right; padding-top:8px; margin-right: 20px;">
+	<img src="img/zebresel_logo.png" />
+     <img src="img/Microsoft_logo_footer.gif" alt="Microsoft" style="vertical-align: super; margin-left: 10px;">
+    </div>
+    
+    <div style="clear: both;">&nbsp;</div>
+   
+</div>
+            
+    
+</div>
+
+</body>
+</html>
