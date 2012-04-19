@@ -8,10 +8,10 @@ using System.Text;
 
 namespace ACS
 { 
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+    [ServiceBehavior]
     public class CACService : IACS
     {
-        private IAirDevice m_device = new CArDrone();
+        private IAirDevice m_device = null;
 
         public CACService()
         {
@@ -46,6 +46,13 @@ namespace ACS
         /// <returns>-1 = FAILURE, >0 = GRANTED with assumed time</returns>
         public int RequestControl()
         {
+            //start device if initialized
+            if (m_device != null && m_device is IAirDevice)
+            {
+                m_device.OnStart();
+                return 1;
+            }
+            
             return 0;
         }
 

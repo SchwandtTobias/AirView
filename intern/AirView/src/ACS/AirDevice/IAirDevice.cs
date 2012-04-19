@@ -9,6 +9,16 @@ namespace ACS
     interface IAirDevice
     {
         /// <summary>
+        /// Starts and initialize device
+        /// </summary>
+        void OnStart();
+
+        /// <summary>
+        /// Method for destroying object
+        /// </summary>
+        void OnExit();
+
+        /// <summary>
         /// Turns on machine
         /// </summary>
         void TurnOn();

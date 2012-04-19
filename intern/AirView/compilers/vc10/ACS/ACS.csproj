@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ARDrone.Control">
+      <HintPath>..\..\..\..\..\extern\AR.Drone\ARDrone.Control.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -52,7 +55,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Service1.svc" />
+    <Content Include="ACS.svc" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -62,10 +65,18 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Service1.svc.cs">
-      <DependentUpon>Service1.svc</DependentUpon>
+    <Compile Include="..\..\..\src\ACS\AirDevice\Devices\ArDrone\CArDrone.cs">
+      <Link>AirDevice\Devices\ARDrone\CArDrone.cs</Link>
     </Compile>
-    <Compile Include="IService1.cs" />
+    <Compile Include="..\..\..\src\ACS\AirDevice\IAirDevice.cs">
+      <Link>AirDevice\IAirDevice.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\src\ACS\IACS.cs">
+      <Link>IACS.cs</Link>
+    </Compile>
+    <Compile Include="ACS.svc.cs">
+      <DependentUpon>ACS.svc</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

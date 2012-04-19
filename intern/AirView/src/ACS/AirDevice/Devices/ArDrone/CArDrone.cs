@@ -13,11 +13,26 @@ namespace ACS
     {
         private ARDrone.Control.DroneControl m_device;
 
-        public CArDrone()
+        /// <summary>
+        /// Starts and initialize device
+        /// </summary>
+        public void OnStart()
         {
             //init machine
-            m_device = new ARDrone.Control.DroneControl();
+            m_device = new DroneControl();
             m_device.ConnectToDroneNetworkAndDrone();
+        }
+
+        /// <summary>
+        /// Method for destroying object
+        /// </summary>
+        public void OnExit()
+        {
+            //turn off device
+            TurnOff();
+
+            //delte space
+            m_device = null;
         }
 
         /// <summary>
