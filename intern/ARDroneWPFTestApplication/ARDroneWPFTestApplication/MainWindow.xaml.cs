@@ -11,14 +11,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Microsoft.Kinect;
-
-
-using ARDrone.Control;
-using ARDrone.Control.Commands;
-using ARDrone.Control.Data;
-using ARDrone.Control.Events;
-using System.ComponentModel;
 
 
 namespace ARDroneWPFTestApplication
@@ -28,139 +20,97 @@ namespace ARDroneWPFTestApplication
     /// </summary>
     public partial class MainWindow : Window
     {
+        private CARDrone m_ARDrone;
 
-        private DroneControl    m_DroneController;
-        private KinectSensor m_KinectSensor;
-        private Skeleton[] m_CurrentSkeletons;
-
-        private List<Command>    m_Commands;
-        private List<String>     m_Logs;
-        private BackgroundWorker m_Sender;
-        private BackgroundWorker m_Logger;
+        private CKinect m_Kinect;
 
         public MainWindow()
         {
-            
-            m_Commands = new List<Command>();
-            
-            m_Logs     = new List<String>();
-
-            try
-            {
-                m_DroneController = new DroneControl();
-
-                m_DroneController.ConnectToDroneNetworkAndDrone();
-                
-                m_DroneController.NetworkConnectionStateChanged += new DroneNetworkConnectionStateChangedEventHandler(drone_NetworkConnectionStateChanged);
-
-    
-                m_KinectSensor = KinectSensor.KinectSensors[0];
-
-                m_KinectSensor.Start();
-                
-                m_KinectSensor.SkeletonStream.Enable();
-                
-                m_KinectSensor.SkeletonFrameReady += new EventHandler<SkeletonFrameReadyEventArgs>(m_KinectSensor_SkeletonFrameReady);
-
-
-                m_Sender = new BackgroundWorker();
-
-                m_Sender.DoWork += new DoWorkEventHandler(SenderDoWork);
-
-                m_Sender.RunWorkerCompleted += new RunWorkerCompletedEventHandler(SenderRunWorkerCompleted);
-
-                m_Sender.RunWorkerAsync();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.StackTrace); 
-            }
-
             InitializeComponent();
+
+            m_ARDrone = new CARDrone();
+            
+            m_Kinect = new CKinect();
         }
 
-        void SenderRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void btARConnect_Click(object sender, RoutedEventArgs e)
         {
-            m_Sender.RunWorkerAsync();
+            SolidColorBrush YellowColor = new SolidColorBrush(Colors.Yellow);
+            ARDroneStatusIndicator.Fill = YellowColor;
+
+            m_ARDrone.Connect();
+
+            SolidColorBrush GreenColor = new SolidColorBrush(Colors.Green);
+            ARDroneStatusIndicator.Fill = GreenColor;
         }
 
-        void SenderDoWork(object sender, DoWorkEventArgs e)
+        private void btARTakeOff_Click(object sender, RoutedEventArgs e)
         {
-            if (m_Commands.Count > 0)
-            {
-                foreach (Command CurrentCommand in m_Commands)
-                {
-                    m_DroneController.SendCommand(CurrentCommand);
-                }
-
-                m_Commands.Clear();
-            }
+            m_ARDrone.TakeOff();
         }
 
-        void m_KinectSensor_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
+        private void btARStop_Click(object sender, RoutedEventArgs e)
         {
-            SkeletonFrame CurrentSkeletonFrame = e.OpenSkeletonFrame();
-            if (CurrentSkeletonFrame != null && CurrentSkeletonFrame.SkeletonArrayLength > 0)
-            {    
-                m_CurrentSkeletons = new Skeleton[CurrentSkeletonFrame.SkeletonArrayLength];
-
-                CurrentSkeletonFrame.CopySkeletonDataTo(m_CurrentSkeletons);
-
-                foreach (Skeleton CurrentSkeleton in m_CurrentSkeletons)
-                {
-                  
-                }
-
-            }
+            m_ARDrone.Emergency();
         }
 
-        void drone_NetworkConnectionStateChanged(object sender, DroneNetworkConnectionStateChangedEventArgs e)
+        private void btARLand_Click(object sender, RoutedEventArgs e)
         {
-            if (e.State == DroneNetworkConnectionState.ConnectedToNetwork)
-            {
-                
-            }
+            m_ARDrone.Land();
         }
 
-        void recorder_CompressionComplete(object sender, EventArgs e)
+        private void btARPicture_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+
         }
 
-        private void button5_Click(object sender, RoutedEventArgs e)
+        private void btARTrim_Click(object sender, RoutedEventArgs e)
         {
-            Command TakeOffCommand = new FlightModeCommand(DroneFlightMode.TakeOff);
-            m_Commands.Add(TakeOffCommand);
+            m_ARDrone.Trim();
         }
 
-        private void button6_Click(object sender, RoutedEventArgs e)
+        private void slARRoll_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Command LandCommand = new FlightModeCommand(DroneFlightMode.Land);
-            m_Commands.Add(LandCommand);
+
         }
 
-        private void button1_Click(object sender, RoutedEventArgs e)
+        private void slARNick_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Command command = new FlightMoveCommand(0.1f, 0, 0, 0);
-            m_DroneController.SendCommand(command);
+
         }
 
-        private void button4_Click(object sender, RoutedEventArgs e)
+        private void btMKConnect_Click(object sender, RoutedEventArgs e)
         {
-            Command command = new FlightMoveCommand(0.0f, 0, 0, 0);
-            m_DroneController.SendCommand(command);
+            m_Kinect.Connect();
+
+            SolidColorBrush YellowColor = new SolidColorBrush(Colors.Yellow);
+            ARDroneStatusIndicator.Fill = YellowColor;
         }
 
-        private void button2_Click(object sender, RoutedEventArgs e)
+        private void btStart_Click(object sender, RoutedEventArgs e)
         {
-            Command command = new FlightModeCommand(DroneFlightMode.Reset);
-            m_DroneController.SendCommand(command);
+            m_Kinect.EnableSkeletonStream();
+
+            SolidColorBrush GreenColor = new SolidColorBrush(Colors.Green);
+            ARDroneStatusIndicator.Fill = GreenColor;
         }
 
-        private void button3_Click(object sender, RoutedEventArgs e)
+        private void btMKStopTrack_Click(object sender, RoutedEventArgs e)
         {
-            Command command = new FlightModeCommand(DroneFlightMode.Emergency);
-            m_DroneController.SendCommand(command);
+            m_Kinect.DisableSkeletonStream();
+
+            SolidColorBrush YellowColor = new SolidColorBrush(Colors.Yellow);
+            ARDroneStatusIndicator.Fill = YellowColor;
+        }
+
+        private void btMKPicture_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void slMKAngle_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
         }
     }
 }
