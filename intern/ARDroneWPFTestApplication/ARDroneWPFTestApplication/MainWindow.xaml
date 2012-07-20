@@ -31,7 +31,8 @@
                 <Button Content="Stop Track" Height="23" HorizontalAlignment="Left" Margin="6,69,0,0" Name="btMKStopTrack" VerticalAlignment="Top" Width="75" Click="btMKStopTrack_Click" />
                 <Button Content="Picture" Height="23" HorizontalAlignment="Left" Margin="6,141,0,0" Name="btMKPicture" VerticalAlignment="Top" Width="75" Click="btMKPicture_Click" />
                 <Label Content="Angle:" Height="28" HorizontalAlignment="Left" Margin="87,40,0,0" Name="lbMKAngle" VerticalAlignment="Top" />
-                <Slider Height="23" HorizontalAlignment="Left" Margin="95,61,0,0" Name="slMKAngle" VerticalAlignment="Top" Width="129" ValueChanged="slMKAngle_ValueChanged" />
+                <Slider Height="23" HorizontalAlignment="Left" Margin="95,61,0,0" Name="slMKAngle" VerticalAlignment="Top" Width="129" ValueChanged="slMKAngle_ValueChanged" Maximum="20" Minimum="-20" />
+                <Button Content="Disconnect" Height="23" HorizontalAlignment="Left" Margin="6,98,0,0" Name="btMKDisconnect" VerticalAlignment="Top" Width="75" Click="btMKDisconnect_Click" />
             </Grid>
         </GroupBox>
     </Grid>

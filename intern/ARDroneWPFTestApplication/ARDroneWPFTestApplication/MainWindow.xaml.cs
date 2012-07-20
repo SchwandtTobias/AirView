@@ -30,7 +30,7 @@ namespace ARDroneWPFTestApplication
 
             m_ARDrone = new CARDrone();
             
-            m_Kinect = new CKinect();
+            m_Kinect = new CKinect( m_ARDrone );
         }
 
         private void btARConnect_Click(object sender, RoutedEventArgs e)
@@ -84,7 +84,7 @@ namespace ARDroneWPFTestApplication
             m_Kinect.Connect();
 
             SolidColorBrush YellowColor = new SolidColorBrush(Colors.Yellow);
-            ARDroneStatusIndicator.Fill = YellowColor;
+            KinectStatusIndicator.Fill = YellowColor;
         }
 
         private void btStart_Click(object sender, RoutedEventArgs e)
@@ -92,7 +92,7 @@ namespace ARDroneWPFTestApplication
             m_Kinect.EnableSkeletonStream();
 
             SolidColorBrush GreenColor = new SolidColorBrush(Colors.Green);
-            ARDroneStatusIndicator.Fill = GreenColor;
+            KinectStatusIndicator.Fill = GreenColor;
         }
 
         private void btMKStopTrack_Click(object sender, RoutedEventArgs e)
@@ -100,7 +100,7 @@ namespace ARDroneWPFTestApplication
             m_Kinect.DisableSkeletonStream();
 
             SolidColorBrush YellowColor = new SolidColorBrush(Colors.Yellow);
-            ARDroneStatusIndicator.Fill = YellowColor;
+            KinectStatusIndicator.Fill = YellowColor;
         }
 
         private void btMKPicture_Click(object sender, RoutedEventArgs e)
@@ -110,7 +110,15 @@ namespace ARDroneWPFTestApplication
 
         private void slMKAngle_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            m_Kinect.ChangeViewAngle((int)(e.NewValue));
+        }
 
+        private void btMKDisconnect_Click(object sender, RoutedEventArgs e)
+        {
+            m_Kinect.Disconnect();
+
+            SolidColorBrush RedColor = new SolidColorBrush(Colors.Red);
+            KinectStatusIndicator.Fill = RedColor;
         }
     }
 }
