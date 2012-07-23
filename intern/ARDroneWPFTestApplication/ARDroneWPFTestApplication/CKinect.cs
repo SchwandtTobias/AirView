@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media.Imaging;
+using System.Drawing.Imaging;
+using System.Windows.Media;
 
 namespace ARDroneWPFTestApplication
 {
@@ -70,25 +73,75 @@ namespace ARDroneWPFTestApplication
            
         }
 
+        public BitmapSource GetSkeletonPictureContext()
+        {
+            return m_DepthImageSource;
+        }
+
         private KinectSensor m_KinectSensor;
 
-        private Skeleton[] m_CurrentSkeletons;
+        private Skeleton[]   m_CurrentSkeletons;
 
-        private CARDrone m_ArDrone;
+        private CARDrone     m_ArDrone;
+
+        private BitmapSource m_DepthImageSource;
+
+
 
         public CKinect(CARDrone _ArDrone)
         {
             m_ArDrone = _ArDrone;
 
+            m_DepthImageSource = null;
+
             try
             {
                 m_KinectSensor = KinectSensor.KinectSensors[0];
 
+                //m_KinectSensor.DepthStream.Enable();
+
                 m_KinectSensor.SkeletonFrameReady += new EventHandler<SkeletonFrameReadyEventArgs>(SkeletonFrameReady);
+
+                m_KinectSensor.DepthFrameReady += new EventHandler<DepthImageFrameReadyEventArgs>(DepthFrameReady);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
+            }
+        }
+
+        private void DepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
+        {
+            using (DepthImageFrame CurrentDepthImageFrame = e.OpenDepthImageFrame())
+            {
+                if (CurrentDepthImageFrame != null)
+                {
+                    short[] DepthImageData = new short[CurrentDepthImageFrame.PixelDataLength];
+
+                    byte[] DepthImageBytes = new byte[CurrentDepthImageFrame.PixelDataLength * 4];
+
+                    CurrentDepthImageFrame.CopyPixelDataTo(DepthImageData);
+
+                    const int BlueColorIndex = 0;
+
+                    const int GreenColorIndex = 0;
+
+                    const int RedColorIndex = 0;
+
+                    for (int IndexOfDepthImage = 0, IndexOfDepthImageBytes = 0; IndexOfDepthImage < DepthImageData.Length && IndexOfDepthImageBytes < DepthImageData.Length * 4; ++IndexOfDepthImage, IndexOfDepthImageBytes += 4)
+                    {
+                        byte Intensity = (byte)((float)DepthImageData[IndexOfDepthImage] / (float)short.MaxValue * (float)byte.MaxValue);
+
+                        DepthImageBytes[IndexOfDepthImageBytes + BlueColorIndex] = Intensity;
+
+                        DepthImageBytes[IndexOfDepthImageBytes + GreenColorIndex] = Intensity;
+
+                        DepthImageBytes[IndexOfDepthImageBytes + RedColorIndex] = Intensity;
+                    }
+
+                    m_DepthImageSource = BitmapSource.Create(CurrentDepthImageFrame.Width, CurrentDepthImageFrame.Height, 96, 96, PixelFormats.Bgr32, null, DepthImageBytes, CurrentDepthImageFrame.Width * 4);
+                }
+
             }
         }
 
@@ -106,7 +159,6 @@ namespace ARDroneWPFTestApplication
 
                     if (CurrentSkeleton.TrackingState == SkeletonTrackingState.Tracked)
                     {
-                        m_ArDrone.TakeOff();
 
                         Joint Head;
                         Joint Hip;
@@ -121,7 +173,10 @@ namespace ARDroneWPFTestApplication
                         if (Math.Abs(HandLeft.Position.X - HandRight.Position.X) > 2 * Math.Abs(Head.Position.Y - Hip.Position.Y))
                         {
                             //fly position detected
-                            m_ArDrone.TakeOff();
+                            if (m_ArDrone.ActualState != CARDrone.State.Fly && m_ArDrone.ActualState != CARDrone.State.Error)
+                            {
+                                m_ArDrone.TakeOff();
+                            }
 
                             float h = Head.Position.Y - Hip.Position.Y;
                             float n1 = Hip.Position.Z - Head.Position.Z;

@@ -3,18 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="AR.Drone meets Kinect" Height="350" Width="525">
     <Grid>
-        <GroupBox Header="Log" Margin="0,189,0,0" Name="gbLog">
+        <GroupBox Header="Log" Name="gbLog" Height="122" VerticalAlignment="Bottom">
             <Grid>
                 <TextBlock Margin="6,6,6,0" Name="TextBoxLog" Height="90" VerticalAlignment="Top" />
             </Grid>
         </GroupBox>
-        <GroupBox Header="AR.Drone" Height="193" HorizontalAlignment="Left" Name="gbArDrone" VerticalAlignment="Top" Width="260">
+        <GroupBox Header="AR.Drone" HorizontalAlignment="Left" Name="gbArDrone" Width="260" Margin="0,0,0,118">
             <Grid>
                 <Button Content="TakeOff" Height="23" HorizontalAlignment="Left" Margin="6,40,0,0" Name="btARTakeOff" VerticalAlignment="Top" Width="75" Click="btARTakeOff_Click" />
-                <Button Content="Connect" Height="23" Name="btARConnect" Width="75" Margin="6,11,167,136" Click="btARConnect_Click" />
+                <Button Content="Connect" Height="23" Name="btARConnect" Width="75" Margin="6,11,167,0" Click="btARConnect_Click" VerticalAlignment="Top" />
                 <Button Content="STOP" Height="23" HorizontalAlignment="Left" Margin="6,69,0,0" Name="btARStop" VerticalAlignment="Top" Width="75" Click="btARStop_Click" />
                 <Button Content="Land" Height="23" HorizontalAlignment="Left" Margin="6,99,0,0" Name="btARLand" VerticalAlignment="Top" Width="75" Click="btARLand_Click" />
-                <Button Content="Trim" Height="23" HorizontalAlignment="Left" Margin="95,0,0,7" Name="btARTrim" VerticalAlignment="Bottom" Width="146" Click="btARTrim_Click" />
+                <Button Content="Trim" HorizontalAlignment="Left" Margin="95,144,0,0" Name="btARTrim" Width="146" Click="btARTrim_Click" Height="23" VerticalAlignment="Top" />
                 <Rectangle Fill="Red" Height="23" HorizontalAlignment="Left" Margin="216,6,0,0" Name="ARDroneStatusIndicator" Stroke="Black" VerticalAlignment="Top" Width="26" />
                 <Slider Height="23" HorizontalAlignment="Left" Margin="96,77,0,0" Name="slARNick" VerticalAlignment="Top" Width="146" ValueChanged="slARNick_ValueChanged" />
                 <Label Content="Nick:" HorizontalAlignment="Left" Margin="87,56,0,76" Name="lbARNick" />
@@ -23,7 +23,7 @@
                 <Button Content="Picture" Height="23" HorizontalAlignment="Left" Margin="6,141,0,0" Name="btARPicture" VerticalAlignment="Top" Width="75" Click="btARPicture_Click" />
             </Grid>
         </GroupBox>
-        <GroupBox Header="Kinect" Height="193" HorizontalAlignment="Left" Margin="260,0,0,0" Name="gbKinect" VerticalAlignment="Top" Width="237">
+        <GroupBox Header="Kinect" Margin="260,0,6,118" Name="gbKinect">
             <Grid>
                 <Rectangle Fill="Red" Height="23" HorizontalAlignment="Left" Margin="193,6,0,0" Name="KinectStatusIndicator" Stroke="Black" VerticalAlignment="Top" Width="26" />
                 <Button Content="Connect" Height="23" HorizontalAlignment="Left" Margin="6,11,0,0" Name="btMKConnect" VerticalAlignment="Top" Width="75" Click="btMKConnect_Click" />
@@ -33,6 +33,7 @@
                 <Label Content="Angle:" Height="28" HorizontalAlignment="Left" Margin="87,40,0,0" Name="lbMKAngle" VerticalAlignment="Top" />
                 <Slider Height="23" HorizontalAlignment="Left" Margin="95,61,0,0" Name="slMKAngle" VerticalAlignment="Top" Width="129" ValueChanged="slMKAngle_ValueChanged" Maximum="20" Minimum="-20" />
                 <Button Content="Disconnect" Height="23" HorizontalAlignment="Left" Margin="6,98,0,0" Name="btMKDisconnect" VerticalAlignment="Top" Width="75" Click="btMKDisconnect_Click" />
+                <Image Margin="95,93,6,10" Name="imgMKSkeletonBox" Stretch="Fill" />
             </Grid>
         </GroupBox>
     </Grid>

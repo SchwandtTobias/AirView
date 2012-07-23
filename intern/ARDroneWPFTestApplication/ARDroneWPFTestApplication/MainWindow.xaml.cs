@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Drawing;
+using System.IO;
 
 
 namespace ARDroneWPFTestApplication
@@ -105,6 +107,8 @@ namespace ARDroneWPFTestApplication
 
         private void btMKPicture_Click(object sender, RoutedEventArgs e)
         {
+
+            imgMKSkeletonBox.Source = m_Kinect.GetSkeletonPictureContext();
 
         }
 
