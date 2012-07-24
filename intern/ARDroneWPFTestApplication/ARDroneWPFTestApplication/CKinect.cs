@@ -98,7 +98,7 @@ namespace ARDroneWPFTestApplication
             {
                 m_KinectSensor = KinectSensor.KinectSensors[0];
 
-                //m_KinectSensor.DepthStream.Enable();
+                m_KinectSensor.DepthStream.Enable();
 
                 m_KinectSensor.SkeletonFrameReady += new EventHandler<SkeletonFrameReadyEventArgs>(SkeletonFrameReady);
 
@@ -187,38 +187,40 @@ namespace ARDroneWPFTestApplication
 
                             float Yaw = HandLeft.Position.Z - HandRight.Position.Z;
 
-                            //Check output of calculated data
-                            //Console.WriteLine("Nick: " + AngleNick + "; Roll: " + AngleRoll + "; Yaw: " + Yaw);
+                            
 
                             //very risky but we can test it
                             //m_ArDrone.Fly(angleRoll, angleNick, yaw, 0.0f);
 
                             //not so risky but must be tested too
                             //it can only be done one of these
-                            if (AngleNick > 25)
+                            float RollFactor = 0.0f;
+                            float NickFactor = 0.0f;
+
+
+                            if (AngleNick > 20)
                             {
-                                m_ArDrone.Pitch(1.0f);
+                                NickFactor = 1.0f;
                             }
-                            else if (AngleNick < 25)
+                            else if (AngleNick < -20)
                             {
-                                m_ArDrone.Pitch(-1.0f);
+                                NickFactor = -1.0f;
                             }
-                            else if (AngleRoll > 25)
+                            else if (AngleRoll > 20)
                             {
-                                m_ArDrone.Roll(1.0f);
+                                RollFactor = 1.0f;
                             }
-                            else if (AngleRoll < 25)
+                            else if (AngleRoll < -20)
                             {
-                                m_ArDrone.Roll(-1.0f);
+                                RollFactor = -1.0f;
                             }
-                            else if (Yaw > 1.0f)
-                            {
-                                m_ArDrone.Yaw(1.0f);
-                            }
-                            else if (Yaw < -1.0f)
-                            {
-                                m_ArDrone.Yaw(-1.0f);
-                            }
+
+                            m_ArDrone.Pitch(NickFactor);
+                            m_ArDrone.Roll(RollFactor);
+
+
+                            //Check output of calculated data
+                            Console.WriteLine("Nick: " + AngleNick + " (" + NickFactor + "); Roll: " + AngleRoll + " (" + RollFactor + ")");
                         }
                         else
                         {

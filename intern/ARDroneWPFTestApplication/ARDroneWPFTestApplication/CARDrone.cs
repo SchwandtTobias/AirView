@@ -120,7 +120,7 @@ namespace ARDroneWPFTestApplication
             if (!m_DroneController.IsFlying) return;
             if (m_ActualState == State.Error) return;
 
-            Command command = new FlightMoveCommand(0.0f, _Direction * 0.1f, 0.0f, 0.0f);
+            Command command = new FlightMoveCommand(0.0f, _Direction * 0.5f, 0.0f, 0.0f);
             AddCommand(command);
         }
 
@@ -130,7 +130,7 @@ namespace ARDroneWPFTestApplication
             if (!m_DroneController.IsFlying) return;
             if (m_ActualState == State.Error) return;
 
-            Command command = new FlightMoveCommand(_Direction * 0.1f, 0.0f, 0.0f, 0.0f);
+            Command command = new FlightMoveCommand(_Direction * 0.5f, 0.0f, 0.0f, 0.0f);
             AddCommand(command);
         }
 
@@ -140,7 +140,7 @@ namespace ARDroneWPFTestApplication
             if (!m_DroneController.IsFlying) return;
             if (m_ActualState == State.Error) return;
 
-            Command command = new FlightMoveCommand(0.0f, 0.0f, _Direction * 0.1f, 0.0f);
+            Command command = new FlightMoveCommand(0.0f, 0.0f, _Direction * 0.5f, 0.0f);
             AddCommand(command);
         }
 
