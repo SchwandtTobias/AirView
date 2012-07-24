@@ -12,6 +12,34 @@ namespace ARDroneWPFTestApplication
 
     public class CKinect
     {
+        public enum KinectState
+        {
+            Connected = 0,
+            Disconnected,
+            Error,
+            CountOfStates,
+            Undefined = -1
+        }
+
+        public enum BodyState
+        {
+            PositionOnly = 0,
+            Tracked,
+            NotTracked,
+            CountOfStates,
+            Undefined = -1
+        }
+
+        public KinectState ActualKinectState
+        {
+            get { return m_ActualKinectState; }
+        }
+
+        public BodyState ActualBodyState
+        {
+            get { return m_ActualBodyState; }
+        }
+
         public void Connect()
         {
             try
@@ -86,6 +114,13 @@ namespace ARDroneWPFTestApplication
 
         private BitmapSource m_DepthImageSource;
 
+        private KinectState  m_ActualKinectState;
+
+        private BodyState    m_ActualBodyState;
+
+        private float        m_NickOrientation;
+        
+        private float        m_RollOrientation;
 
 
         public CKinect(CARDrone _ArDrone)
@@ -93,6 +128,14 @@ namespace ARDroneWPFTestApplication
             m_ArDrone = _ArDrone;
 
             m_DepthImageSource = null;
+
+            m_NickOrientation = 0.0f;
+
+            m_RollOrientation = 0.0f;
+
+            m_ActualKinectState = KinectState.Disconnected;
+
+            m_ActualBodyState = BodyState.NotTracked;
 
             try
             {
@@ -106,7 +149,19 @@ namespace ARDroneWPFTestApplication
             }
             catch (Exception e)
             {
+                m_ActualKinectState = KinectState.Error;
+
+                m_KinectSensor = null;
+
                 Console.WriteLine(e.StackTrace);
+            }
+        }
+
+        public ~CKinect()
+        {
+            if (m_KinectSensor != null)
+            {
+                
             }
         }
 
@@ -157,17 +212,19 @@ namespace ARDroneWPFTestApplication
 
                     Skeleton CurrentSkeleton = m_CurrentSkeletons[0];
 
+
                     if (CurrentSkeleton.TrackingState == SkeletonTrackingState.Tracked)
                     {
+                        m_ActualBodyState = BodyState.Tracked;
 
                         Joint Head;
                         Joint Hip;
                         Joint HandLeft;
                         Joint HandRight;
 
-                        Head = CurrentSkeleton.Joints[JointType.Head];
-                        Hip = CurrentSkeleton.Joints[JointType.HipCenter];
-                        HandLeft = CurrentSkeleton.Joints[JointType.HandLeft];
+                        Head      = CurrentSkeleton.Joints[JointType.Head     ];
+                        Hip       = CurrentSkeleton.Joints[JointType.HipCenter];
+                        HandLeft  = CurrentSkeleton.Joints[JointType.HandLeft ];
                         HandRight = CurrentSkeleton.Joints[JointType.HandRight];
 
                         if (Math.Abs(HandLeft.Position.X - HandRight.Position.X) > 2 * Math.Abs(Head.Position.Y - Hip.Position.Y))
@@ -194,33 +251,47 @@ namespace ARDroneWPFTestApplication
 
                             //not so risky but must be tested too
                             //it can only be done one of these
-                            float RollFactor = 0.0f;
-                            float NickFactor = 0.0f;
+                            float CurrentRollOrientation = 0.0f;
+                            float CurrentNickOrientation = 0.0f;
 
 
                             if (AngleNick > 20)
                             {
-                                NickFactor = 1.0f;
+                                CurrentNickOrientation = 1.0f;
                             }
                             else if (AngleNick < -20)
                             {
-                                NickFactor = -1.0f;
+                                CurrentNickOrientation = -1.0f;
                             }
-                            else if (AngleRoll > 20)
+                            
+                            if (AngleRoll > 20)
                             {
-                                RollFactor = 1.0f;
+                                CurrentRollOrientation = 1.0f;
                             }
                             else if (AngleRoll < -20)
                             {
-                                RollFactor = -1.0f;
+                                CurrentRollOrientation = -1.0f;
                             }
 
-                            m_ArDrone.Pitch(NickFactor);
-                            m_ArDrone.Roll(RollFactor);
+                            if (m_NickOrientation != CurrentNickOrientation)
+                            {
+                                m_NickOrientation = CurrentNickOrientation;
 
+                                m_ArDrone.Pitch(m_NickOrientation);
 
-                            //Check output of calculated data
-                            Console.WriteLine("Nick: " + AngleNick + " (" + NickFactor + "); Roll: " + AngleRoll + " (" + RollFactor + ")");
+                                //Check output of calculated data
+                                Console.WriteLine("Nick: " + AngleNick + " (" + m_NickOrientation + ");");
+                            }
+
+                            if (m_RollOrientation != CurrentRollOrientation)
+                            {
+                                m_RollOrientation = CurrentRollOrientation;
+
+                                m_ArDrone.Roll(m_RollOrientation);
+
+                                //Check output of calculated data
+                                Console.WriteLine("Roll: " + AngleRoll + " (" + m_RollOrientation + ")");
+                            }
                         }
                         else
                         {
@@ -230,8 +301,14 @@ namespace ARDroneWPFTestApplication
                     }
                     else
                     {
+                        m_ActualBodyState = BodyState.PositionOnly;
+
                         m_ArDrone.Land();
                     }
+                }
+                else
+                {
+                    m_ActualBodyState = BodyState.NotTracked;
                 }
             }
         }

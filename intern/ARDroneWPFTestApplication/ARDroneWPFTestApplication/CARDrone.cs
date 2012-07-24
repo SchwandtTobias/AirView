@@ -33,6 +33,11 @@ namespace ARDroneWPFTestApplication
             Undifined = -1
         };
 
+        public State ActualState
+        {
+            get { return m_ActualState; }
+        }
+
         public void Connect()
         {
             try
@@ -154,11 +159,6 @@ namespace ARDroneWPFTestApplication
             AddCommand(command);
         }
         #endregion
-
-        public State ActualState
-        {
-            get { return m_ActualState; }
-        }
 
         // --------------------------------------------------------------------------------
         // Private
