@@ -1,4 +1,4 @@
-Ordnerstruktur:
+﻿Ordnerstruktur:
 
 /bin/
 Fertige Programme und Anwendungen (immer neueste Version)
@@ -11,3 +11,6 @@ Dokumente und Tabellen zum Projekt
 
 /intern/
 Quellcode des Programms mit fertiger SLN
+
+
+Hallo!
