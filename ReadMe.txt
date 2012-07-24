@@ -11,6 +11,3 @@ Dokumente und Tabellen zum Projekt
 
 /intern/
 Quellcode des Programms mit fertiger SLN
-
-
-Hallo!
