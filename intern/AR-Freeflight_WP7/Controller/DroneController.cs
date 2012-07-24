@@ -1140,22 +1140,19 @@ namespace DroneController
 
                 SendMessage(CommunicationChannel.VideoStream, 0);
 
-  
                 #endregion
 
 
+                //MulticastHelper.Join();
+                //MulticastHelper.data_received += new EventHandler<ReceivedEventArgs>((sender, e) =>
+                //{
+                //    if (e.buf.Length > 0)
+                //    {
+                //        Controller.VideoImage.AddImageStream(e.buf);
+                //    }
+                //});
 
-/*
-                MulticastHelper.Join();
-                MulticastHelper.data_received += new EventHandler<ReceivedEventArgs>((sender, e) =>
-                {
-                    if (e.buf.Length > 0)
-                    {
-                        Controller.VideoImage.AddImageStream(e.buf);
-                    }
-                });
-
-                */
+                
 
                 do
                 {
@@ -1164,14 +1161,15 @@ namespace DroneController
                         byte[] receiveBuffer = NetworkHelper.UdpRecieve(socket, ref remoteEndPoint);
                         if (receiveBuffer == null)
                         {
+
                             Thread.Sleep(500);
                             continue;
                         }
                         else if (receiveBuffer.Length == 0)
                         {
-                            #region Activate NavigationData Stream
-
-                            SendMessage(CommunicationChannel.NavigationData, 1);
+                            #region Activate Videodata Stream
+                            
+                            SendMessage(CommunicationChannel.VideoStream, 0);
 
                             #endregion
                         }
@@ -1192,7 +1190,7 @@ namespace DroneController
                         {
                             case 10060: //Socket timeout
                                 Controller.OnNotifiedTraceMessage(String.Format("Video :No activity on worker thread for {0} milliseconds.", Constants.SocketTimeoutNavigationData), NotificationSource.CommunicationCenter, TraceNotificationLevel.Error);
-                                WorkerThreadNavigationDataActive = false;
+                                WorkerThreadVideoStreamActive = false;
                                 break;
                         }
                     }
@@ -1202,8 +1200,6 @@ namespace DroneController
                     }
 
                 } while (Controller.ConnectionStatus != ConnectionStatus.Closed);
-
-
             }
 
             private static void ThreadMethodReceiveControlInfo()

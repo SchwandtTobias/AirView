@@ -156,7 +156,7 @@ namespace DroneController
         public DroneControllerConfiguration()
         {
             this.DroneIpAddress             = "192.168.1.1";
-            this.GuestIpAddress             = "192.168.1.2";
+            this.GuestIpAddress             = "192.168.1.3";
             this.NavigationDataPort         = 5554;
             this.VideoStreamPort            = 5555;
             this.CommandPort                = 5556;

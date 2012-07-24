@@ -227,7 +227,7 @@ namespace DroneController
 
                 // Block the UI thread for a maximum of TIMEOUT_MILLISECONDS milliseconds.
                 // If no response comes back within this time then proceed
-                _clientDone[s].WaitOne();//(TimeOut);
+                _clientDone[s].WaitOne(TimeOut);//(TimeOut);
             }
 
             return msg;
