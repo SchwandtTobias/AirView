@@ -73,15 +73,11 @@ namespace DroneController
         /// Occurs when the status of the ARDrone has changed.
         /// </summary>
         public event EventHandler<ConnectionStatusChangedEventArgs> OnConnectionStatusChanged;
-
         /// <summary>
         /// Occurs when new information on the ARDrone is available. This is handled by a timer with elapses at a configurable interval.
         /// </summary>
         /// <see cref="ControllerConfig.DroneInfoTimerInterval"/>
         public event EventHandler<DroneInfoNotificationEventArgs> OnNotifyDroneInfoMessage;
-
-
-
         /// <summary>
         /// Gets or sets the trace notification level. Possible values are verbose, information, warning, error and none.
         /// </summary>
@@ -115,9 +111,6 @@ namespace DroneController
         /// <value><c>true</c> if tte ARdrone is flying; otherwise, <c>false</c>.</value>
         public bool DroneIsFlying { get; set; }
 
-
-       // public bool IsMoving { get; set; }
-
         /// <summary>
         /// Gets or sets a value indicating whether the ARDrone needs to save a still image.
         /// </summary>
@@ -132,7 +125,6 @@ namespace DroneController
         private VideoImage VideoImage { get; set; }
 //        private VideoFileWriter VideoFileWriter { get; set; }
 #endif
-
 
         private DispatcherTimer DroneInfoTimer { get; set; }
 
@@ -159,8 +151,6 @@ namespace DroneController
             DroneInfoTimer = new DispatcherTimer();
             DroneInfoTimer.Interval = TimeSpan.FromTicks(Constants.DroneInfoTimerInterval);
             DroneInfoTimer.Tick += new EventHandler(DroneInfoTimer_Elapsed);
-
-
         }
 
         void StartTimer()
@@ -179,8 +169,6 @@ namespace DroneController
             });
         }
 
-
-
         /// <summary>
         /// Starts the engines of the ARDrone. The ARDrone will take of and start hovering at a predetermined height.
         /// </summary>
@@ -189,13 +177,10 @@ namespace DroneController
             DroneProxy.StartEngines();
             DroneIsFlying = true;
 
-
             // Start Movement Thread after Drone is flying
             Thread ThreadSendMovement = new Thread(new ThreadStart(CommunicationCenter.ThreadMethodSendMovementCommands));
             ThreadSendMovement.Name = "MovementThread";
-            ThreadSendMovement.Start();
-        
-            
+            ThreadSendMovement.Start(); 
         }
 
 
@@ -206,7 +191,6 @@ namespace DroneController
         {
             DroneProxy.StopEngines();
             DroneIsFlying = false;
-            
         }
         /// <summary>
         /// Starts issuing an emergency reset command to the ARDrone. The engines will stop immediately and ARDrone stops hovering. In most cases this will lead to a crash.
@@ -222,7 +206,6 @@ namespace DroneController
         {
             DroneProxy.StopResetDrone();
         }
-
 
         /// <summary>
         /// Makes the ARDrone animate its LED's.
@@ -242,7 +225,6 @@ namespace DroneController
             CommandCenter.SetFlatTrim();
         }
 
-
         /// <summary>
         /// Displays the next video channel.
         /// </summary>
@@ -257,75 +239,6 @@ namespace DroneController
         {
             CommandCenter.SwitchVideoChannel((VideoChannel)videoChannel);
         }
-
-        // OLD_MOVEMENT_DISABLED_START
-        // movement commands are now send directly
-        /*
-        
-        float roll = 0;
-        public float Roll
-        {
-            get { return roll; }
-            set
-            {
-                roll = value;
-                SetFlightParameters(roll, pitch, height, yaw);
-            }
-        }
-        float pitch = 0;
-
-        public float Pitch
-        {
-            get { return pitch; }
-            set
-            {
-                pitch = value;
-                SetFlightParameters(roll, pitch, height, yaw);
-            }
-        }
-        float height = 0;
-
-        public float Gaz
-        {
-            get { return height; }
-            set
-            {
-                height = value;
-                SetFlightParameters(roll, pitch, height, yaw);
-            }
-        }
-        float yaw = 0;
-
-        public float Yaw
-        {
-            get { return yaw; }
-            set
-            {
-                yaw = value;
-                SetFlightParameters(roll, pitch, height, yaw);
-            }
-        }
-        /// <summary>
-        /// Sets the flight parameters. This allows to pilot the ARDrone.
-        /// </summary>
-        /// <param name="roll">The roll parameter (Tilt Left/Right - Phi angle).</param>
-        /// <param name="pitch">The pitch parameter (Tilt Front/Back - Theta angle)</param>
-        /// <param name="height">The height parameter. (Move Up/Down)</param>
-        /// <param name="yaw">The yaw parameter. (Rotate Left/Right - Psi angle)</param>
-        /// <remarks>All parameters have a value between -1 and 1.</remarks>
-        public void SetFlightParameters(float roll, float pitch, float height, float yaw)
-        {
-            CommandCenter.SetProgressiveInputValues(roll, pitch, height, yaw);
-
-            if (ControllerConfig.EnableInputFeedback)
-            {
-                OnFlightParametersChanged(roll, pitch, height, yaw);
-            }
-        }
-         
-        */
-        // OLD_MOVEMENT_DISABLED_END
-
 
         /// <summary>
         /// Makes the ARDrone animate its LED's.
@@ -362,8 +275,6 @@ namespace DroneController
             backgroundWorker.DoWork += new DoWorkEventHandler(ConnectAsync);
             backgroundWorker.RunWorkerAsync();
         }
-
-
 
         /// <summary>
         /// This method tears down the connection with the ARDrone.
@@ -427,9 +338,6 @@ namespace DroneController
         /// </remarks>
         public void SetIndoorConfiguration()
         {
-
-            //epic Konstante = 57.29577951
-
             SetConfiguration("control:outdoor", "FALSE");
             SetConfiguration("control:flight_without_shell", "FALSE");
             SetConfiguration("control:altitude_max", "2000");
@@ -439,9 +347,6 @@ namespace DroneController
 
         public void SetChildrenConfiguration()
         {
-
-            //epic Konstante = 57.29577951
-
             SetConfiguration("control:outdoor", "FALSE");
             SetConfiguration("control:flight_without_shell", "FALSE");
             SetConfiguration("control:altitude_max", "2000");
@@ -525,13 +430,6 @@ namespace DroneController
             }
         }
 
-        private void OnGPSMessage(string message)
-        {
-            if (OnNotifyGPSMessage != null)
-            {
-                OnNotifyGPSMessage(this, new GPSNotificationEventArgs(message));
-            }
-        }
 
         private DroneInfoNotificationEventArgs DroneInfoNotificationEventArgs { get; set; }
         private int inputNotificationThrottler = 0;
@@ -668,10 +566,6 @@ namespace DroneController
 
         private static class CommunicationCenter
         {
-            private static byte[] _receiveBuffer;
-            private static UdpAnySourceMulticastClient _client;
-            private static bool _joined;
-            private static Thread WorkerThreadReceiveGPSData;
             #region Private Properties
 
             private static DroneController Controller { get; set; }
@@ -811,29 +705,6 @@ namespace DroneController
 
                         #endregion
 
-                        #region GPS Data
-
-                        if (Controller.ControllerConfig.EnableGPSStreamThread)
-                        {
-                            Controller.OnNotifiedTraceMessage("Setting up GPS data communication channel.", NotificationSource.CommunicationCenter, TraceNotificationLevel.Information);
-
-                            UdpSockets[CommunicationChannel.GPSData] = NetworkHelper.CreateUdpSocket(LocalIPAddress, Controller.ControllerConfig.GPSDataPort, Constants.SocketTimeoutVideoStream);
-                            EndPoints[CommunicationChannel.GPSData] = NetworkHelper.CreateRemoteEndPoint(Controller.ControllerConfig.DroneIpAddress, Controller.ControllerConfig.GPSDataPort);
-
-                            WorkerThreadReceiveGPSData = new Thread(new ThreadStart(ThreadMethodReceiveGPSData));
-                            WorkerThreadReceiveGPSData.Name = "GPS Data Thread";
-                            WorkerThreadReceiveGPSData.Start();
-
-                            Controller.OnNotifiedTraceMessage("GPS Data worker thread started.", NotificationSource.DroneController, TraceNotificationLevel.Information);
-                        }
-                        else
-                        {
-                            Controller.OnNotifiedTraceMessage("GPS Data communication not enabled.", NotificationSource.DroneController, TraceNotificationLevel.Warning);
-                        }
-
-                        #endregion
-
-
                         #region Control Info
 
                         if (Controller.ControllerConfig.EnableControlInfoThread)
@@ -905,7 +776,6 @@ namespace DroneController
             }
 
             #endregion
-
 
             #region Private Methods
 
@@ -984,8 +854,7 @@ namespace DroneController
             #region Thread Methods
 
 
-            // new movement thread
-
+            // New movement thread
             public static void ThreadMethodSendMovementCommands()
             {
                while (Controller.DroneIsFlying != false)
@@ -1006,16 +875,6 @@ namespace DroneController
                         MovementCommand = CommandCenter.ComposeCommandString("AT*PCMD=" + "{0}," + "1," + newRoll + "," + newPitch + "," + newGaz + "," + newYaw + "\r", null);
                     }
 
-
-                   //Enable for movement command debugging
-                    
-                   /*
-                    if (Debugger.IsAttached)
-                    {
-                        Debug.WriteLine("roll: {0} pitch: {1} yaw: {2} gaz: {3}", Controller.roll_send, Controller.pitch_send, Controller.yaw_send, Controller.gaz_send);
-                    }
-                   */
-
                     // sends ONLY movement commands, NOT Land, Take-Off, ..
                     SendMessage(CommunicationChannel.Command, MovementCommand);
 
@@ -1023,7 +882,6 @@ namespace DroneController
 
                 }
             }
-
 
             private static void ThreadMethodSendATCommands()
             {
@@ -1050,12 +908,6 @@ namespace DroneController
                         //actually send them. Maybe to be finetuned at a later stage for some selctivity. 
                         if (!Controller.ControllerConfig.EnableATCommandSimulation)
                         {
-                            /*
-                            if (Debugger.IsAttached)
-                            {
-                                Debug.WriteLine("commandbatch: {0}", commandBatch);
-                            }*/
-
                             //movement commands are NOT sent here
                             //look at: ThreadMethodSendMovementCommands()
                            SendMessage(CommunicationChannel.Command, commandBatch);
@@ -1094,52 +946,7 @@ namespace DroneController
                 } while (Controller.ConnectionStatus != ConnectionStatus.Closed);
             }
 
-
-            private static void ThreadMethodReceiveGPSData()
-            {
-                Socket socket = UdpSockets[CommunicationChannel.GPSData];
-                IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 0);
-
-                SendMessage(CommunicationChannel.GPSData, 1);
-
-
-                do
-                {
-                    try
-                    {
-                        byte[] receiveBuffer = NetworkHelper.UdpRecieve(socket,ref endPoint);
-                        if (receiveBuffer == null)
-                        {
-                            Thread.Sleep(500);
-                            continue;
-                        }
-                        else if (receiveBuffer.Length == 0)
-                        {
-                            SendMessage(CommunicationChannel.GPSData, 1);
-                        }
-                        else
-                        {
-                            Controller.OnGPSMessage(Encoding.UTF8.GetString(receiveBuffer, 0, receiveBuffer.Length));
-                        }
-                    }
-                    catch (SocketException socketException)
-                    {
-                        switch (socketException.ErrorCode)
-                        {
-                            case 10060: //Socket timeout
-                                Controller.OnNotifiedTraceMessage(String.Format("Nav :No activity on worker thread for {0} milliseconds.", Constants.SocketTimeoutNavigationData), NotificationSource.CommunicationCenter, TraceNotificationLevel.Error);
-                                WorkerThreadNavigationDataActive = false;
-                                break;
-                        }
-                    }
-                    catch (Exception exception)
-                    {
-                        Controller.OnNotifiedTraceMessage("GPS " + exception.ToString(), NotificationSource.CommunicationCenter, TraceNotificationLevel.Error);
-                    }
-                } while (Controller.ConnectionStatus != ConnectionStatus.Closed);
-            } 
-
-           private static void ThreadMethodReceiveNavigationData()
+            private static void ThreadMethodReceiveNavigationData()
             {
                 Socket socket = UdpSockets[CommunicationChannel.NavigationData];
                 IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 0);
@@ -1230,10 +1037,6 @@ namespace DroneController
                 } while (Controller.ConnectionStatus != ConnectionStatus.Closed);
             }
 
-
-
-
-
             private static void ThreadMethodReceiveVideoStream()
             {
                 Socket socket = UdpSockets[CommunicationChannel.VideoStream];
@@ -1298,7 +1101,6 @@ namespace DroneController
             private static void ThreadMethodReceiveControlInfo()
             {
                 Socket socket = null;
-                //NetworkStream networkStream = null;
                 StringBuilder stringBuffer = new StringBuilder();
                 byte[] buffer = new byte[Constants.ControlInfoBufferSize];
 
@@ -1308,7 +1110,6 @@ namespace DroneController
                     {
                         socket = TcpSockets[CommunicationChannel.ControlInfo];
                         NetworkHelper.TcpConnect(socket,EndPoints[CommunicationChannel.ControlInfo]);
-                        //networkStream = socket.GetStream();
 
                         int byteCount = NetworkHelper.TcpRecieve(socket,buffer, 0, Constants.ControlInfoBufferSize);
 
@@ -1320,10 +1121,9 @@ namespace DroneController
                                 Buffer.BlockCopy(buffer, 0, message, 0, byteCount);
                                 stringBuffer.Append(Encoding.UTF8.GetString(message,0,message.Length));
                                 byteCount = 0;
-                                //if (networkStream.DataAvailable)
-                                //{
+
                                 byteCount = NetworkHelper.TcpRecieve(socket, buffer, 0, Constants.ControlInfoBufferSize);
-                                //}
+
                             } while (byteCount > 0);
 
                             Controller.UpdateDroneConfigurationValues(stringBuffer.ToString());
@@ -1373,11 +1173,6 @@ namespace DroneController
                     finally
                     {
                         stringBuffer.Length = 0;
-
-                        /*if (networkStream != null)
-                        {
-                            networkStream.Close();
-                        }*/
 
                         if (socket != null)
                         {
@@ -1493,7 +1288,6 @@ namespace DroneController
 
                 // OLD_MOVEMENT_START (unused)
                 
-                
                 #region Add Sequence & InputValue
 
                
@@ -1537,7 +1331,6 @@ namespace DroneController
 
                 #endregion
                 
-
                 // OLD_MOVEMENT_END
 
 
@@ -1548,31 +1341,6 @@ namespace DroneController
             {
                 EnqueueCommand(ATCommands.SwitchVideoChannel, (int)videoChannel);
             }
-
-            // OLD_MOVEMENT_START
-            /*
-            internal static void SetProgressiveInputValues(float roll, float pitch, float height, float yaw)
-            {
-                int newPitch = 0;
-                int newRoll = 0;
-                int newGaz = 0;
-                int newYaw = 0;
-
-                roll = (Math.Abs(roll) > 1) ? 1 : roll;
-                pitch = (Math.Abs(pitch) > 1) ? 1 : pitch;
-                height = (Math.Abs(height) > 1) ? 1 : height;
-                yaw = (Math.Abs(yaw) > 1) ? 1 : yaw;
-
-                newPitch = BitConverter.ToInt32(BitConverter.GetBytes(pitch),0);
-                newRoll = BitConverter.ToInt32(BitConverter.GetBytes(roll), 0);
-                newGaz = BitConverter.ToInt32(BitConverter.GetBytes(height), 0);
-                newYaw = BitConverter.ToInt32(BitConverter.GetBytes(yaw), 0);
-                
-                
-                EnqueueCommand(ATCommands.SetProgressiveInputValues, 1, newRoll, newPitch, newGaz, newYaw);
-            }
-            */
-            // OLD_MOVEMENT_END
 
             internal static void SetFlatTrim()
             {
@@ -1627,7 +1395,5 @@ namespace DroneController
 
             #endregion
         }
-
-        public event EventHandler<GPSNotificationEventArgs> OnNotifyGPSMessage;
     }
 }

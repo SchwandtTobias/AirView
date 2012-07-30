@@ -84,7 +84,6 @@
     <Compile Include="Enumerations.cs" />
     <Compile Include="EventArgs.cs" />
     <Compile Include="Exceptions.cs" />
-    <Compile Include="GPSNotificationEventArgs.cs" />
     <Compile Include="NavigationDataInfo.cs" />
     <Compile Include="NetworkHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

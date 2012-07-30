@@ -447,8 +447,7 @@ namespace DroneController
         /// <summary>
         /// This communication channel is used to send control messages.
         /// </summary>
-        ControlInfo,
-        GPSData
+        ControlInfo
     }
 
 
@@ -535,7 +534,4 @@ namespace DroneController
         /// </summary>
         CAD_TYPE_NUM
     }
-
-
-
 }

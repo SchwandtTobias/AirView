@@ -161,10 +161,8 @@ namespace DroneController
             this.VideoStreamPort            = 5555;
             this.CommandPort                = 5556;
             this.ControlInfoPort            = 5559;
-            this.GPSDataPort = 6666;
             
             this.EnableATCommandThread      = true;
-            this.EnableGPSStreamThread      = true;
             this.EnableNavigationDataThread = true;
             this.EnableVideoStreamThread    = true;
             this.EnableControlInfoThread    = true;
@@ -177,9 +175,5 @@ namespace DroneController
 
             DroneInfoTimerInterval          = Constants.DroneInfoTimerInterval;
         }
-
-        public bool EnableGPSStreamThread { get; set; }
-
-        public int GPSDataPort { get; set; }
     }
 }

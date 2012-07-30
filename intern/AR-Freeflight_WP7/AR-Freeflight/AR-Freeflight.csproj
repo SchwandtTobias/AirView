@@ -102,11 +102,9 @@
     </Content>
     <Resource Include="button_2.png" />
     <Resource Include="button_hoch.png" />
-    <Resource Include="button.jpg" />
     <Content Include="SplashScreenImage.jpg" />
     <Resource Include="button_runter.png" />
     <Resource Include="controlstick_background.png" />
-    <Resource Include="motionbutton_hover.png" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -53,7 +53,6 @@ namespace AR_Freeflight
             null_section = controlstick_border.Width / 9;
 
             motion = new Motion();
-            
             motion.CurrentValueChanged += new EventHandler<SensorReadingEventArgs<MotionReading>>(motion_CurrentValueChanged);
 
             try
@@ -86,8 +85,7 @@ namespace AR_Freeflight
 
                     //rotate handy matrix around 90° on z_axis for landscaperight orientation
                     var viewMatrix = motion.CurrentValue.Attitude.RotationMatrix * Microsoft.Xna.Framework.Matrix.CreateRotationZ(MathHelper.PiOver2);
-                    
-                    
+
                     //PITCH
                     //(float)Math.Atan((viewMatrix.Backward.Y) / (Math.Sqrt(Math.Pow(viewMatrix.Backward.X, 2) + Math.Pow(viewMatrix.Backward.Z, 2))));
                     // =viewMatrix.Backward.Y;
@@ -102,14 +100,12 @@ namespace AR_Freeflight
                         nullPitch = (float)Math.Atan((viewMatrix.Backward.Y) / (Math.Sqrt(Math.Pow(viewMatrix.Backward.X, 2) + Math.Pow(viewMatrix.Backward.Z, 2))));
                         nullRoll = (float)Math.Atan((viewMatrix.Backward.X) / (Math.Sqrt(Math.Pow(viewMatrix.Backward.Y, 2) + Math.Pow(viewMatrix.Backward.Z, 2))));
                         firstManipulation = false;
-                     }                    
-                         
+                    }                    
                     else
                     {
                          roll = MathHelper.ToDegrees(nullRoll - (float)Math.Atan((viewMatrix.Backward.X) / (Math.Sqrt(Math.Pow(viewMatrix.Backward.Y, 2) + Math.Pow(viewMatrix.Backward.Z, 2)))));
                          pitch = -MathHelper.ToDegrees(nullPitch - (float)Math.Atan((viewMatrix.Backward.Y) / (Math.Sqrt(Math.Pow(viewMatrix.Backward.X, 2) + Math.Pow(viewMatrix.Backward.Z, 2)))));
-                              
-          
+
                         // limit the phone tilt and set minimum for sense
                         //_START
                          if (roll > MAX_PHONE_TILT)
@@ -163,13 +159,11 @@ namespace AR_Freeflight
         internal bool connectToDrone()
         {
             
-
             // Create a new Drone Configuration
             DroneControllerConfiguration droneControllerConfig = new DroneControllerConfiguration();
 
             droneControllerConfig.EnableNavigationDataThread = true;
             droneControllerConfig.EnableVideoStreamThread = true;
-            droneControllerConfig.EnableGPSStreamThread = false;
             droneControllerConfig.EnableATCommandThread = true;
             droneControllerConfig.EnableControlInfoThread = true;
             droneControllerConfig.EnableATCommandSimulation = false;
@@ -185,7 +179,6 @@ namespace AR_Freeflight
             droneController.TraceNotificationLevel = TraceNotificationLevel.Verbose;
             droneController.OnNotifyTraceMessage += new EventHandler<TraceNotificationEventArgs>(droneController_OnNotifyTraceMessage);
             droneController.OnNotifyVideoMessage += new EventHandler<VideoNotificationEventArgs>(droneController_OnNotifyVideoMessage);
-            droneController.OnNotifyGPSMessage += new EventHandler<GPSNotificationEventArgs>(droneController_OnNotifyGPSMessage);
             droneController.OnNotifyDroneInfoMessage += new EventHandler<DroneInfoNotificationEventArgs>(droneController_OnNotifyDroneInfoMessage);
             droneController.OnConnectionStatusChanged += new EventHandler<ConnectionStatusChangedEventArgs>(droneController_OnConnectionStatusChanged);
             droneController.Connect();
@@ -220,11 +213,6 @@ namespace AR_Freeflight
             {
                 Dispatcher.BeginInvoke(new Action<object, DroneInfoNotificationEventArgs>(droneController_OnNotifyDroneInfoMessage), sender, e);
             }
-        }
-
-        void droneController_OnNotifyGPSMessage(object sender, GPSNotificationEventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         void droneController_OnNotifyVideoMessage(object sender, VideoNotificationEventArgs e)
