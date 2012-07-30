@@ -43,7 +43,7 @@ namespace DroneController
     {
         private static int TimeOut = 0;
 
-        const int MAX_BUFFER_SIZE = 1024*2;
+        const int MAX_BUFFER_SIZE = 1024*50;
 
         static Dictionary<Socket, ManualResetEvent> _clientDone = new Dictionary<Socket, ManualResetEvent>();
         static Dictionary<Socket, IPEndPoint> _local_end_points = new Dictionary<Socket, IPEndPoint>();
@@ -227,7 +227,7 @@ namespace DroneController
 
                 // Block the UI thread for a maximum of TIMEOUT_MILLISECONDS milliseconds.
                 // If no response comes back within this time then proceed
-                _clientDone[s].WaitOne(TimeOut);//(TimeOut);
+                _clientDone[s].WaitOne();//(TimeOut);
             }
 
             return msg;

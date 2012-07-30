@@ -6,12 +6,13 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="728" d:DesignHeight="480"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="480"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Landscape" Orientation="Landscape"
     shell:SystemTray.IsVisible="False">
+
 
     <!--LayoutRoot ist das Stammraster, in dem alle anderen Seiteninhalte platziert werden-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -22,13 +23,23 @@
 
         <!--TitlePanel enthält den Namen der Anwendung und den Seitentitel-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock x:Name="ApplicationTitle" Text="AR-Freeflight" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock x:Name="PageTitle" Text="Headquarter" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock x:Name="ApplicationTitle" Text="Freeflight App for Parrot ARDrone" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock x:Name="PageTitle" Text="AirView DroneFlight" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <!--ContentPanel - zusätzliche Inhalte hier platzieren-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <Button Content="Fly" Height="180" HorizontalAlignment="Left" Margin="12,0,0,0" Name="navigateToControlpage" VerticalAlignment="Top" Width="180" Click="navigateToControlpage_Click" />
+            <Button Content="Fliegen" Height="150" Name="navigateToControlpage" VerticalAlignment="Top" Click="navigateToControlpage_Click" HorizontalAlignment="Left" Width="252" d:LayoutOverrides="VerticalAlignment" RenderTransformOrigin="0.5,0.5" Foreground="{StaticResource PhoneBackgroundBrush}" BorderBrush="{x:Null}" Background="{StaticResource PhoneAccentBrush}" ClickMode="Press" >
+            	<Button.RenderTransform>
+            		<CompositeTransform/>
+            	</Button.RenderTransform>
+            </Button> 
+            <TextBlock x:Name="testblock" Height="33" Margin="32,0,8,3" TextWrapping="Wrap" VerticalAlignment="Bottom" HorizontalAlignment="Center" Foreground="Red"/>
+            <Button Content="Update" HorizontalAlignment="Left" Margin="0,142,0,27" Width="252" Opacity="0.5" Background="{StaticResource PhoneAccentBrush}" Foreground="{StaticResource PhoneBackgroundBrush}" BorderBrush="{x:Null}"/>
+            <Button Content="Einstellungen" Margin="252,0,272,0" Height="150" VerticalAlignment="Top" Opacity="0.5" BorderBrush="{x:Null}" Background="{StaticResource PhoneAccentBrush}" Foreground="{StaticResource PhoneBackgroundBrush}"/>
+            <Button Content="Spiele" Margin="252,142,272,27" Opacity="0.5" BorderBrush="{x:Null}" Background="{StaticResource PhoneAccentBrush}" Foreground="{StaticResource PhoneBackgroundBrush}"/>
+            <Button Content="Bilder/Videos" HorizontalAlignment="Right" Margin="0,0,16,0" Width="252" Height="150" VerticalAlignment="Top" Opacity="0.5" Foreground="{StaticResource PhoneBackgroundBrush}" BorderBrush="{x:Null}" Background="{StaticResource PhoneAccentBrush}"/>
+            <Button Content="Info`s" Margin="0,142,16,27" HorizontalAlignment="Right" Width="252" Opacity="0.5" Foreground="{StaticResource PhoneBackgroundBrush}" BorderBrush="{x:Null}" Background="{StaticResource PhoneAccentBrush}"/>
         </Grid>
     </Grid>
  

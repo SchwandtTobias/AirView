@@ -191,16 +191,18 @@ namespace DroneController
         private byte[] ImageStream { get; set; }
 
         private ImageSlice ImageSlice { get; set; }
-        private ushort[] PixelData { get; set; }
-        private WriteableBitmap InternalImageSource { get; set; }
+        private int[] PixelData { get; set; }
+        private int[] permuPxData { get; set; }
+
+        
 
         #endregion
 
         #region internal Properties
 
-        public WriteableBitmap ImageSource
+        public int[] ImageSource
         {
-            get { return new WriteableBitmap(InternalImageSource); }
+            get { return permuPxData; }
         }
 
         #endregion
@@ -322,38 +324,36 @@ namespace DroneController
             }
 
             
-            uint[] PxData = new uint[PixelData.Length];
+
             for (int i = 0; i < PixelData.Length; i++)
             {
-                PxData[i] = rgb565_to_premult_argb(PixelData[i]);
+                permuPxData[i] = rgb565_to_premult_argb(PixelData[i]);
             }
 
-            Array.Copy(PxData, 0, InternalImageSource.Pixels, 0, PxData.Length);
-            InternalImageSource.Invalidate();
 
             if (ImageComplete != null)
             {
-                ImageComplete(this, new ImageCompleteEventArgs(ImageSource));
+                ImageComplete(this, new ImageCompleteEventArgs(permuPxData, Width, Height));
             }
         }
 
 
-        private uint rgb565_to_premult_argb(ushort s)
+        private int rgb565_to_premult_argb(int s)
         {
             byte red_value = (byte)((s & 0xF800) >> 11);
             byte green_value = (byte)((s & 0x7E0) >> 5);
             byte blue_value = (byte)((s & 0x1F));
             byte alpha_value = 0xFF;
-            double scale_alpha = alpha_value / 0xFF;
+            double scale_alpha = 4.0;
 
-            return (uint)(
+            return (int)(
                 (alpha_value << 24)
                 | ((byte)(red_value * scale_alpha) << 16)
-                | ((byte)(green_value * scale_alpha) << 8)
+                | ((byte)(green_value * scale_alpha*0.5) << 8)
                 | (byte)(blue_value * scale_alpha)
                 );
         }
-
+        
         private void ReadHeader()
         {
             uint code = 0;
@@ -402,16 +402,20 @@ namespace DroneController
                         if (ImageSlice == null)
                         {
                             ImageSlice = new ImageSlice(BlockCount);
-                            PixelData = new ushort[Width * Height];
-                            InternalImageSource = new WriteableBitmap(Width, Height); //new WriteableBitmap(Width, Height, 96, 96, PixelFormats.Bgr565, null);
+                            PixelData = new int[Width * Height];
+
+                            permuPxData = new int[Width * Height];
+                            //InternalImageSource = new WriteableBitmap(Width, Height); //new WriteableBitmap(Width, Height, 96, 96, PixelFormats.Bgr565, null);
                             //Rectangle = new Int32Rect(0, 0, Width, Height);
                         }
                         else if (ImageSlice.MacroBlocks.Count != BlockCount)
                         {
 
                             ImageSlice = new ImageSlice(BlockCount);
-                            PixelData = new ushort[Width * Height];
-                            InternalImageSource = new WriteableBitmap(Width, Height); //new WriteableBitmap(Width, Height, 96, 96, PixelFormats.Bgr565, null);
+                            PixelData = new int[Width * Height];
+
+                            permuPxData = new int[Width * Height];
+                            //InternalImageSource = new WriteableBitmap(Width, Height); //new WriteableBitmap(Width, Height, 96, 96, PixelFormats.Bgr565, null);
                             //Rectangle = new Int32Rect(0, 0, Width, Height);
                         }
                     }

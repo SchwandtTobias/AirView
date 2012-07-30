@@ -50,6 +50,8 @@ using System.Diagnostics;
 
 namespace DroneController
 {
+
+    
     /// <summary>
     /// This class provides the main interface to control the AR.Drone
     /// </summary>
@@ -91,6 +93,22 @@ namespace DroneController
         /// <value>The connection status.</value>
         public ConnectionStatus ConnectionStatus { get; internal set; }
 
+
+        public float roll_send
+        { get; set; }
+
+        public float pitch_send
+        { get; set; }
+
+        public float yaw_send
+        { get; set; }
+
+        public float gaz_send
+        { get; set; }
+
+        public bool MotionIsActive
+        { get; set; }
+
         /// <summary>
         /// Gets or sets a value indicating whether the ARDrone is flying.
         /// </summary>
@@ -98,7 +116,7 @@ namespace DroneController
         public bool DroneIsFlying { get; set; }
 
 
-        public bool IsMoving { get; set; }
+       // public bool IsMoving { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the ARDrone needs to save a still image.
@@ -170,7 +188,17 @@ namespace DroneController
         {
             DroneProxy.StartEngines();
             DroneIsFlying = true;
+
+
+            // Start Movement Thread after Drone is flying
+            Thread ThreadSendMovement = new Thread(new ThreadStart(CommunicationCenter.ThreadMethodSendMovementCommands));
+            ThreadSendMovement.Name = "MovementThread";
+            ThreadSendMovement.Start();
+        
+            
         }
+
+
         /// <summary>
         /// Stops the ARDrone engines, the ARDrone will land smoothly.
         /// </summary>
@@ -178,6 +206,7 @@ namespace DroneController
         {
             DroneProxy.StopEngines();
             DroneIsFlying = false;
+            
         }
         /// <summary>
         /// Starts issuing an emergency reset command to the ARDrone. The engines will stop immediately and ARDrone stops hovering. In most cases this will lead to a crash.
@@ -229,9 +258,11 @@ namespace DroneController
             CommandCenter.SwitchVideoChannel((VideoChannel)videoChannel);
         }
 
-
+        // OLD_MOVEMENT_DISABLED_START
+        // movement commands are now send directly
+        /*
+        
         float roll = 0;
-
         public float Roll
         {
             get { return roll; }
@@ -291,6 +322,10 @@ namespace DroneController
                 OnFlightParametersChanged(roll, pitch, height, yaw);
             }
         }
+         
+        */
+        // OLD_MOVEMENT_DISABLED_END
+
 
         /// <summary>
         /// Makes the ARDrone animate its LED's.
@@ -380,7 +415,7 @@ namespace DroneController
             SetConfiguration("control:outdoor", "TRUE");
             SetConfiguration("control:flight_without_shell", "FALSE");
             SetConfiguration("control:altitude_max", "2000");
-            SetConfiguration("control:euler_angle_max", ".25");
+            SetConfiguration("control:euler_angle_max", "0.30");
             SetConfiguration("detect:enemy_colors", "1");
         }
 
@@ -392,10 +427,26 @@ namespace DroneController
         /// </remarks>
         public void SetIndoorConfiguration()
         {
+
+            //epic Konstante = 57.29577951
+
             SetConfiguration("control:outdoor", "FALSE");
             SetConfiguration("control:flight_without_shell", "FALSE");
             SetConfiguration("control:altitude_max", "2000");
-            SetConfiguration("control:euler_angle_max", ".25");
+            SetConfiguration("control:euler_angle_max", "0.23");
+            SetConfiguration("control:control_vz_max", "600");
+        }
+
+        public void SetChildrenConfiguration()
+        {
+
+            //epic Konstante = 57.29577951
+
+            SetConfiguration("control:outdoor", "FALSE");
+            SetConfiguration("control:flight_without_shell", "FALSE");
+            SetConfiguration("control:altitude_max", "2000");
+            SetConfiguration("control:euler_angle_max", "0.18");
+            SetConfiguration("control:control_vz_max", "600");
             SetConfiguration("detect:enemy_colors", "1");
         }
 
@@ -513,7 +564,7 @@ namespace DroneController
         {
             if (OnNotifyVideoMessage != null && ConnectionStatus != ConnectionStatus.Closed)
             {
-                OnNotifyVideoMessage(this, new VideoNotificationEventArgs(VideoImage.ImageSource));
+                OnNotifyVideoMessage(this, new VideoNotificationEventArgs(e.PixelArray, e.Width, e.Height));
 
                 if (PictureRequested)
                 {
@@ -534,7 +585,7 @@ namespace DroneController
             }
 
             IsolatedStorageFileStream myFileStream = myStore.CreateFile(tempJPEG);
-            VideoImage.ImageSource.SaveJpeg(myFileStream, VideoImage.ImageSource.PixelWidth, VideoImage.ImageSource.PixelHeight, 0, 85);
+            //VideoImage.ImageSource.SaveJpeg(myFileStream, VideoImage.ImageSource.PixelWidth, VideoImage.ImageSource.PixelHeight, 0, 85);
             myFileStream.Close();
 
 
@@ -844,6 +895,7 @@ namespace DroneController
                         WorkerThreadReceiveNavigationData = null;
                         WorkerThreadReceiveVideoStream = null;
                         WorkerThreadReceiveControlInfo = null;
+                        
                     }
                 }
                 catch (Exception exception)
@@ -931,6 +983,48 @@ namespace DroneController
 
             #region Thread Methods
 
+
+            // new movement thread
+
+            public static void ThreadMethodSendMovementCommands()
+            {
+               while (Controller.DroneIsFlying != false)
+                {
+
+                    int newRoll = BitConverter.ToInt32(BitConverter.GetBytes(Controller.roll_send), 0);
+                    int newPitch = BitConverter.ToInt32(BitConverter.GetBytes(Controller.pitch_send), 0);
+                    int newYaw = BitConverter.ToInt32(BitConverter.GetBytes(Controller.yaw_send), 0);
+                    int newGaz = BitConverter.ToInt32(BitConverter.GetBytes(Controller.gaz_send), 0);
+
+                    string MovementCommand; 
+                    if (newRoll == 0 && newPitch == 0 && newGaz == 0 && newYaw == 0)
+                    {
+                        MovementCommand = CommandCenter.ComposeCommandString("AT*PCMD=" + "{0}," + "0," + newRoll + "," + newPitch + "," + newGaz + "," + newYaw + "\r", null);
+                    }
+                    else
+                    {
+                        MovementCommand = CommandCenter.ComposeCommandString("AT*PCMD=" + "{0}," + "1," + newRoll + "," + newPitch + "," + newGaz + "," + newYaw + "\r", null);
+                    }
+
+
+                   //Enable for movement command debugging
+                    
+                   /*
+                    if (Debugger.IsAttached)
+                    {
+                        Debug.WriteLine("roll: {0} pitch: {1} yaw: {2} gaz: {3}", Controller.roll_send, Controller.pitch_send, Controller.yaw_send, Controller.gaz_send);
+                    }
+                   */
+
+                    // sends ONLY movement commands, NOT Land, Take-Off, ..
+                    SendMessage(CommunicationChannel.Command, MovementCommand);
+
+                    System.Threading.Thread.Sleep(20);
+
+                }
+            }
+
+
             private static void ThreadMethodSendATCommands()
             {
                 string commandBatch = null;
@@ -951,12 +1045,21 @@ namespace DroneController
                         }
 
                         commandBatch = CommandCenter.GetNextCommandBatch();
-
+                        
                         //Simple way to be able to only view the commands that would be sent and not
                         //actually send them. Maybe to be finetuned at a later stage for some selctivity. 
                         if (!Controller.ControllerConfig.EnableATCommandSimulation)
                         {
-                            SendMessage(CommunicationChannel.Command, commandBatch);
+                            /*
+                            if (Debugger.IsAttached)
+                            {
+                                Debug.WriteLine("commandbatch: {0}", commandBatch);
+                            }*/
+
+                            //movement commands are NOT sent here
+                            //look at: ThreadMethodSendMovementCommands()
+                           SendMessage(CommunicationChannel.Command, commandBatch);
+                                     
                         }
 
                         Controller.OnNotifiedTraceMessage(commandBatch.Remove(commandBatch.Length -1), NotificationSource.CommandCenter, TraceNotificationLevel.Information);
@@ -1036,7 +1139,7 @@ namespace DroneController
                 } while (Controller.ConnectionStatus != ConnectionStatus.Closed);
             } 
 
-            private static void ThreadMethodReceiveNavigationData()
+           private static void ThreadMethodReceiveNavigationData()
             {
                 Socket socket = UdpSockets[CommunicationChannel.NavigationData];
                 IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 0);
@@ -1138,21 +1241,10 @@ namespace DroneController
 
                 #region Activate Video Stream
 
-                SendMessage(CommunicationChannel.VideoStream, 0);
+                SendMessage(CommunicationChannel.VideoStream, 1);
 
+  
                 #endregion
-
-
-                //MulticastHelper.Join();
-                //MulticastHelper.data_received += new EventHandler<ReceivedEventArgs>((sender, e) =>
-                //{
-                //    if (e.buf.Length > 0)
-                //    {
-                //        Controller.VideoImage.AddImageStream(e.buf);
-                //    }
-                //});
-
-                
 
                 do
                 {
@@ -1161,15 +1253,14 @@ namespace DroneController
                         byte[] receiveBuffer = NetworkHelper.UdpRecieve(socket, ref remoteEndPoint);
                         if (receiveBuffer == null)
                         {
-
                             Thread.Sleep(500);
                             continue;
                         }
                         else if (receiveBuffer.Length == 0)
                         {
-                            #region Activate Videodata Stream
-                            
-                            SendMessage(CommunicationChannel.VideoStream, 0);
+                            #region Activate NavigationData Stream
+
+                            SendMessage(CommunicationChannel.NavigationData, 1);
 
                             #endregion
                         }
@@ -1190,7 +1281,7 @@ namespace DroneController
                         {
                             case 10060: //Socket timeout
                                 Controller.OnNotifiedTraceMessage(String.Format("Video :No activity on worker thread for {0} milliseconds.", Constants.SocketTimeoutNavigationData), NotificationSource.CommunicationCenter, TraceNotificationLevel.Error);
-                                WorkerThreadVideoStreamActive = false;
+                                WorkerThreadNavigationDataActive = false;
                                 break;
                         }
                     }
@@ -1200,6 +1291,8 @@ namespace DroneController
                     }
 
                 } while (Controller.ConnectionStatus != ConnectionStatus.Closed);
+
+
             }
 
             private static void ThreadMethodReceiveControlInfo()
@@ -1397,11 +1490,16 @@ namespace DroneController
 
                 #endregion
 
+
+                // OLD_MOVEMENT_START (unused)
+                
+                
                 #region Add Sequence & InputValue
 
-                //
+               
                 
                 int moving = 0;
+                /*
                 if (DroneController.IsMoving)
                 {
                     if (DroneController.Roll != 0)
@@ -1421,23 +1519,27 @@ namespace DroneController
                         moving = 1;
                     }
                 }
-
+                */
                 if (moving == 1)
                 {
                     CommandBatch.Append(ComposeCommandString(ATCommands.ResetCommunicationHub));
-                    CommandBatch.Append(ComposeCommandString(ATCommands.SetProgressiveInputValues, 1, BitConverter.ToInt32(BitConverter.GetBytes(DroneController.Roll), 0), BitConverter.ToInt32(BitConverter.GetBytes(DroneController.Pitch), 0), BitConverter.ToInt32(BitConverter.GetBytes(DroneController.Gaz), 0), BitConverter.ToInt32(BitConverter.GetBytes(DroneController.Yaw), 0)));
-                    if (Debugger.IsAttached)
-                        Debug.WriteLine("Pitch: {0}, Roll: {1}, Yaw: {2}, Gaz: {3}, Moving: 1", DroneController.Pitch, DroneController.Roll, DroneController.Yaw, DroneController.Gaz);
+                   // CommandBatch.Append(ComposeCommandString(ATCommands.SetProgressiveInputValues, 1, BitConverter.ToInt32(BitConverter.GetBytes(DroneController.Roll), 0), BitConverter.ToInt32(BitConverter.GetBytes(DroneController.Pitch), 0), BitConverter.ToInt32(BitConverter.GetBytes(DroneController.Gaz), 0), BitConverter.ToInt32(BitConverter.GetBytes(DroneController.Yaw), 0)));
+                   // if (Debugger.IsAttached)
+                   //  Debug.WriteLine("Pitch: {0}, Roll: {1}, Yaw: {2}, Gaz: {3}, Moving: 1", DroneController.Pitch, DroneController.Roll, DroneController.Yaw, DroneController.Gaz);
                 }
                 else
                 {
                     CommandBatch.Append(ComposeCommandString(ATCommands.SetInputValue, (uint)DroneProxy.DroneInputValue));
-                    if (Debugger.IsAttached)
-                        Debug.WriteLine("Pitch: {0}, Roll: {1}, Yaw: {2}, Gaz: {3}, Moving: 0", DroneController.Pitch, DroneController.Roll, DroneController.Yaw, DroneController.Gaz);
+                  // if (Debugger.IsAttached)
+                  //     Debug.WriteLine("Pitch: {0}, Roll: {1}, Yaw: {2}, Gaz: {3}, Moving: 0", DroneController.Pitch, DroneController.Roll, DroneController.Yaw, DroneController.Gaz);
 
                 }
 
                 #endregion
+                
+
+                // OLD_MOVEMENT_END
+
 
                 return CommandBatch.ToString();
             }
@@ -1447,6 +1549,8 @@ namespace DroneController
                 EnqueueCommand(ATCommands.SwitchVideoChannel, (int)videoChannel);
             }
 
+            // OLD_MOVEMENT_START
+            /*
             internal static void SetProgressiveInputValues(float roll, float pitch, float height, float yaw)
             {
                 int newPitch = 0;
@@ -1463,10 +1567,12 @@ namespace DroneController
                 newRoll = BitConverter.ToInt32(BitConverter.GetBytes(roll), 0);
                 newGaz = BitConverter.ToInt32(BitConverter.GetBytes(height), 0);
                 newYaw = BitConverter.ToInt32(BitConverter.GetBytes(yaw), 0);
-
-
+                
+                
                 EnqueueCommand(ATCommands.SetProgressiveInputValues, 1, newRoll, newPitch, newGaz, newYaw);
             }
+            */
+            // OLD_MOVEMENT_END
 
             internal static void SetFlatTrim()
             {

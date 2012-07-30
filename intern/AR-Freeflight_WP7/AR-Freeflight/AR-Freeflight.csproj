@@ -25,6 +25,8 @@
     <SilverlightAppEntry>AR_Freeflight.App</SilverlightAppEntry>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <Utf8Output>true</Utf8Output>
+    <ExpressionBlendVersion>4.0.30816.0</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +51,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Devices.Sensors" />
+    <Reference Include="Microsoft.Expression.Interactions" />
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Interop" />
     <Reference Include="Microsoft.Xna.Framework" />
@@ -56,6 +59,7 @@
     <Reference Include="system" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Interactivity" />
     <Reference Include="System.Xml" />
     <Reference Include="mscorlib.extensions" />
   </ItemGroup>
@@ -96,9 +100,13 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="button_.png" />
-    <Resource Include="button_motion.png" />
+    <Resource Include="button_2.png" />
+    <Resource Include="button_hoch.png" />
+    <Resource Include="button.jpg" />
     <Content Include="SplashScreenImage.jpg" />
+    <Resource Include="button_runter.png" />
+    <Resource Include="controlstick_background.png" />
+    <Resource Include="motionbutton_hover.png" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

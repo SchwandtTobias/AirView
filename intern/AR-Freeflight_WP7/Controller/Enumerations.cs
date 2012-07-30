@@ -468,7 +468,7 @@ namespace DroneController
         /// <summary>
         /// This AT command sets a reference of the horizontal plane for the drone internal control system.
         /// </summary>
-        internal static readonly string SetFlatTrim = "AT*FTRIM={0}\r";
+        internal static readonly string SetFlatTrim = "AT*FTRIM={0},\r";
         /// <summary>
         /// This AT Command sets an configurable option on the drone.
         /// </summary>
@@ -484,6 +484,7 @@ namespace DroneController
         /// <summary>
         /// This AT Command is used to provide the ARDrone with piloting instructions.
         /// </summary>
+        ///
         internal static readonly string SetProgressiveInputValues = "AT*PCMD={0},{1},{2},{3},{4},{5}\r";
         /// <summary>
         /// This AT Command activates/deactivates the detection of coloured patterns.

@@ -47,7 +47,9 @@ namespace DroneController
         /// Gets or sets the current image.
         /// </summary>
         /// <value>The current image.</value>
-        public WriteableBitmap CurrentImage { get; set; }
+        public int[] PixelArray { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
 
         #endregion
 
@@ -57,12 +59,32 @@ namespace DroneController
         /// Initializes a new instance of the <see cref="VideoNotificationEventArgs"/> class.
         /// </summary>
         /// <param name="imageSource">The image to send.</param>
-        public VideoNotificationEventArgs(WriteableBitmap imageSource)
+        public VideoNotificationEventArgs(int[] Pixel, int width, int height)
         {
-            this.CurrentImage = imageSource;
+            PixelArray = new int[Pixel.Length];
+            Array.Copy(Pixel, PixelArray, Pixel.Length);
+
+            this.Width = width;
+            this.Height = height;
         }
 
         #endregion
+    }
+
+    public class ImageCompleteEventArgs : EventArgs
+    {
+        public int[] PixelArray { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+
+        public ImageCompleteEventArgs(int[] Pixel, int width, int height)
+        {
+            PixelArray = new int[Pixel.Length];
+            Array.Copy(Pixel, PixelArray, Pixel.Length);
+
+            this.Width = width;
+            this.Height = height;
+        }
     }
 
 
@@ -176,9 +198,6 @@ namespace DroneController
     }
 
 
-
-    
-
     /// <summary>
     /// This class passes ARDrone specific information to the event subscribers (e.g. BatteryLevel, Current Height, ...)
     /// </summary>
@@ -252,15 +271,5 @@ namespace DroneController
         public bool WorkerThreadControlInfoActive { get; set; }
 
         #endregion
-    }
-
-    public class ImageCompleteEventArgs : EventArgs
-    {
-        public ImageSource ImageSource { get; set; }
-
-        public ImageCompleteEventArgs(ImageSource imageSource)
-        {
-            this.ImageSource = imageSource;
-        }
     }
 }

@@ -76,7 +76,6 @@
     <Reference Include="mscorlib.extensions" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MutlicastHelper.cs" />
     <Compile Include="CommonHelper.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DroneController.cs" />
