@@ -19,7 +19,7 @@ namespace ARDroneWPFTestApplication
         // Public
         // --------------------------------------------------------------------------------
 
-        public const int     s_MaxSavedCommands = 5;
+        public const int     s_MaxSavedCommands = 2;
 
         public enum State
         {
@@ -174,12 +174,20 @@ namespace ARDroneWPFTestApplication
 
         private State               m_ActualState;
 
+        private DateTime            m_LastUpateTime;
+
+        private long                m_UpdateInterval;
+
 
         public CARDrone()
         {
             m_ListLock = new Mutex();
 
             m_ActualState = State.Disconnected;
+
+            m_LastUpateTime = new DateTime();
+
+            m_UpdateInterval = 10;
 
             try
             {
@@ -206,6 +214,16 @@ namespace ARDroneWPFTestApplication
             }
         }
 
+        ~CARDrone()
+        {
+            if (m_ActualState != State.Error && m_ActualState != State.Land)
+            {
+                m_ActualState = State.Disconnected;
+                Land();
+            }
+            m_DroneController.Disconnect();
+        }
+
         private void DroneError(object sender, DroneErrorEventArgs e)
         {
             m_ActualState = State.Error;
@@ -219,25 +237,33 @@ namespace ARDroneWPFTestApplication
 
         private void SenderDoWork(object sender, DoWorkEventArgs e)
         {
-            m_ListLock.WaitOne(1000);
-            
-            if (m_Commands.Count > 0)
-            {
-                m_ActualState = State.Fly;
+            long TimeBetweenUpdates = (DateTime.Now.Ticks - m_LastUpateTime.Ticks) / TimeSpan.TicksPerMillisecond;
 
-                foreach (Command CurrentCommand in m_Commands)
+
+            if (TimeBetweenUpdates > m_UpdateInterval && m_ActualState != State.Land || m_ActualState != State.Disconnected)
+            {
+                m_LastUpateTime = DateTime.Now;
+
+                m_ListLock.WaitOne(1000);
+
+                if (m_Commands.Count > 0)
                 {
-                    m_DroneController.SendCommand(CurrentCommand);
+                    m_ActualState = State.Fly;
+
+                    foreach (Command CurrentCommand in m_Commands)
+                    {
+                        m_DroneController.SendCommand(CurrentCommand);
+                    }
+
+                    m_Commands.Clear();
+                }
+                else
+                {
+                    m_ActualState = State.Hover;
                 }
 
-                m_Commands.Clear();
+                m_ListLock.ReleaseMutex();
             }
-            else
-            {
-                m_ActualState = State.Hover;
-            }
-
-            m_ListLock.ReleaseMutex();
         }
 
         private void NetworkConnectionStateChanged(object sender, DroneNetworkConnectionStateChangedEventArgs e)

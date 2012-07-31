@@ -44,11 +44,15 @@ namespace ARDroneWPFTestApplication
         {
             try
             {
+                m_Logs.Add("[System] Kinrect connection will start\n");
+
                 m_KinectSensor.Start();
+
+                m_Logs.Add("[System] Kinrect connection started\n");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.StackTrace);
+                m_Logs.Add(e.StackTrace + "\n");
             }
         }
 
@@ -56,11 +60,15 @@ namespace ARDroneWPFTestApplication
         {
             try
             {
+                m_Logs.Add("[System] Kinrect connection will close\n");
+
                 m_KinectSensor.Stop();
+
+                m_Logs.Add("[System] Kinrect connection closed\n");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.StackTrace);
+                m_Logs.Add(e.StackTrace + "\n");
             }
         }
 
@@ -69,10 +77,12 @@ namespace ARDroneWPFTestApplication
             try
             {
                 m_KinectSensor.SkeletonStream.Enable();
+
+                m_Logs.Add("[System] Tracking On\n");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.StackTrace);
+                m_Logs.Add(e.StackTrace + "\n");
             }
         }
 
@@ -81,10 +91,12 @@ namespace ARDroneWPFTestApplication
             try
             {
                 m_KinectSensor.SkeletonStream.Disable();
+
+                m_Logs.Add("[System] Tracking Off\n");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.StackTrace);
+                m_Logs.Add(e.StackTrace + "\n");
             }
         }
 
@@ -106,6 +118,19 @@ namespace ARDroneWPFTestApplication
             return m_DepthImageSource;
         }
 
+        public String GetLogs()
+        {
+            String Result = "Airview AR-Drone - Kinect FHS V0.1\n";
+
+            foreach (String Element in m_Logs)
+            {
+                Result += Element;
+            }
+
+            return Result;
+
+        }
+
         private KinectSensor m_KinectSensor;
 
         private Skeleton[]   m_CurrentSkeletons;
@@ -122,6 +147,8 @@ namespace ARDroneWPFTestApplication
         
         private float        m_RollOrientation;
 
+        private List<String> m_Logs;
+
 
         public CKinect(CARDrone _ArDrone)
         {
@@ -137,6 +164,8 @@ namespace ARDroneWPFTestApplication
 
             m_ActualBodyState = BodyState.NotTracked;
 
+            m_Logs = new List<String>(200);
+
             try
             {
                 m_KinectSensor = KinectSensor.KinectSensors[0];
@@ -146,6 +175,8 @@ namespace ARDroneWPFTestApplication
                 m_KinectSensor.SkeletonFrameReady += new EventHandler<SkeletonFrameReadyEventArgs>(SkeletonFrameReady);
 
                 m_KinectSensor.DepthFrameReady += new EventHandler<DepthImageFrameReadyEventArgs>(DepthFrameReady);
+
+                m_Logs.Add("[System] Kinect Sensor ready\n");
             }
             catch (Exception e)
             {
@@ -153,15 +184,16 @@ namespace ARDroneWPFTestApplication
 
                 m_KinectSensor = null;
 
-                Console.WriteLine(e.StackTrace);
+                m_Logs.Add(e.StackTrace);
             }
+
         }
 
-        public ~CKinect()
+        ~CKinect()
         {
             if (m_KinectSensor != null)
             {
-                
+                m_KinectSensor.Stop();
             }
         }
 
@@ -215,6 +247,9 @@ namespace ARDroneWPFTestApplication
 
                     if (CurrentSkeleton.TrackingState == SkeletonTrackingState.Tracked)
                     {
+                        if (m_ActualBodyState != BodyState.Tracked)
+                            m_Logs.Add("[User] user tracked\n");
+
                         m_ActualBodyState = BodyState.Tracked;
 
                         Joint Head;
@@ -244,8 +279,7 @@ namespace ARDroneWPFTestApplication
 
                             float Yaw = HandLeft.Position.Z - HandRight.Position.Z;
 
-                            
-
+                            m_Logs.Add("[User] " + AngleNick + " - " + AngleRoll + " - " + Yaw + "\n");
                             //very risky but we can test it
                             //m_ArDrone.Fly(angleRoll, angleNick, yaw, 0.0f);
 
@@ -278,9 +312,6 @@ namespace ARDroneWPFTestApplication
                                 m_NickOrientation = CurrentNickOrientation;
 
                                 m_ArDrone.Pitch(m_NickOrientation);
-
-                                //Check output of calculated data
-                                Console.WriteLine("Nick: " + AngleNick + " (" + m_NickOrientation + ");");
                             }
 
                             if (m_RollOrientation != CurrentRollOrientation)
@@ -288,9 +319,6 @@ namespace ARDroneWPFTestApplication
                                 m_RollOrientation = CurrentRollOrientation;
 
                                 m_ArDrone.Roll(m_RollOrientation);
-
-                                //Check output of calculated data
-                                Console.WriteLine("Roll: " + AngleRoll + " (" + m_RollOrientation + ")");
                             }
                         }
                         else
