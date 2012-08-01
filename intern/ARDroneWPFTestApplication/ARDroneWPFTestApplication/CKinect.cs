@@ -291,20 +291,20 @@ namespace ARDroneWPFTestApplication
 
                             if (AngleNick > 20)
                             {
-                                CurrentNickOrientation = 1.0f;
+                                CurrentNickOrientation = -1.0f;
                             }
                             else if (AngleNick < -20)
                             {
-                                CurrentNickOrientation = -1.0f;
+                                CurrentNickOrientation = 1.0f;
                             }
                             
                             if (AngleRoll > 20)
                             {
-                                CurrentRollOrientation = 1.0f;
+                                CurrentRollOrientation = -1.0f;
                             }
                             else if (AngleRoll < -20)
                             {
-                                CurrentRollOrientation = -1.0f;
+                                CurrentRollOrientation = 1.0f;
                             }
 
                             if (m_NickOrientation != CurrentNickOrientation)

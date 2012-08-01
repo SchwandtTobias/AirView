@@ -56,6 +56,8 @@ namespace ARDroneWPFTestApplication
             SolidColorBrush YellowColor = new SolidColorBrush(Colors.Yellow);
             ARDroneStatusIndicator.Fill = YellowColor;
 
+            m_ARDrone.SetIpAddress(tbOwnIPAddress.Text, tbARIPAddress.Text);
+
             m_ARDrone.Connect();
 
             SolidColorBrush GreenColor = new SolidColorBrush(Colors.Green);
@@ -155,6 +157,30 @@ namespace ARDroneWPFTestApplication
             btMKConnect.IsEnabled = true;
             btStart.IsEnabled = false;
             btMKPicture.IsEnabled = false;
+        }
+
+        private void tbOwnIPAddress_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (tbOwnIPAddress.Text == "")
+                tbOwnIPAddress.Text = "Own IP-Address";
+        }
+
+        private void tbOwnIPAddress_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (tbOwnIPAddress.Text == "Own IP-Address")
+                tbOwnIPAddress.Text = "192.168.1.2";
+        }
+
+        private void tbARIPAddress_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (tbARIPAddress.Text == "")
+                tbARIPAddress.Text = "AR IP-Address";
+        }
+
+        private void tbARIPAddress_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (tbARIPAddress.Text == "AR IP-Address")
+                tbARIPAddress.Text = "192.168.1.1";
         }
     }
 }

@@ -50,6 +50,12 @@ namespace ARDroneWPFTestApplication
             }
         }
 
+        public void SetIpAddress(String _OwnIPAddress, String _ARIPAddress)
+        {
+            m_OwnIPAddress = _OwnIPAddress;
+            m_ARIPAddress = _ARIPAddress;
+        }
+
         #region FlyModeCommands
 
         public void TakeOff()
@@ -178,6 +184,10 @@ namespace ARDroneWPFTestApplication
 
         private long                m_UpdateInterval;
 
+        private string              m_OwnIPAddress;
+
+        private string              m_ARIPAddress;
+
 
         public CARDrone()
         {
@@ -187,14 +197,18 @@ namespace ARDroneWPFTestApplication
 
             m_LastUpateTime = new DateTime();
 
-            m_UpdateInterval = 10;
+            m_UpdateInterval = 100;
 
             try
             {
                 m_Commands = new List<Command>(s_MaxSavedCommands);
 
-                m_DroneController = new DroneControl();
+                DroneConfig RouterConfig = new DroneConfig();
 
+                RouterConfig.DroneNetworkIdentifierStart = "airview";
+
+                m_DroneController = new DroneControl(RouterConfig);
+                
                 m_DroneController.NetworkConnectionStateChanged += new DroneNetworkConnectionStateChangedEventHandler(NetworkConnectionStateChanged);
 
                 m_DroneController.Error += new DroneErrorEventHandler(DroneError);
