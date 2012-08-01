@@ -56,17 +56,50 @@ namespace ARDroneWPFTestApplication
             SolidColorBrush YellowColor = new SolidColorBrush(Colors.Yellow);
             ARDroneStatusIndicator.Fill = YellowColor;
 
-            m_ARDrone.SetIpAddress(tbOwnIPAddress.Text, tbARIPAddress.Text);
+            if (tbOwnIPAddress.Text == "" && tbARIPAddress.Text == "")
+            {
+                m_ARDrone.SetIpAddress("192.168.1.2", "192.168.1.1");
+            }
+            else
+            {
+                m_ARDrone.SetIpAddress(tbOwnIPAddress.Text, tbARIPAddress.Text);
+            }
 
             m_ARDrone.Connect();
 
-            SolidColorBrush GreenColor = new SolidColorBrush(Colors.Green);
-            ARDroneStatusIndicator.Fill = GreenColor;
+            if (m_ARDrone.ActualState == CARDrone.State.Connected)
+            {
+                btARConnect.Content = "Disconnect";
+
+                SolidColorBrush GreenColor = new SolidColorBrush(Colors.Green);
+                ARDroneStatusIndicator.Fill = GreenColor;
+
+                btARTakeOff.IsEnabled = true;
+                btARLand.IsEnabled = true;
+                btARStop.IsEnabled = true;
+                btARTrim.IsEnabled = true;
+            }
+            else
+            {
+                btARConnect.Content = "Connect";
+
+                SolidColorBrush GreenColor = new SolidColorBrush(Colors.Red);
+                ARDroneStatusIndicator.Fill = GreenColor;
+
+                btARTakeOff.IsEnabled = false;
+                btARLand.IsEnabled = false;
+                btARStop.IsEnabled = false;
+                btARTrim.IsEnabled = false;
+            }
+            
         }
 
         private void btARTakeOff_Click(object sender, RoutedEventArgs e)
         {
             m_ARDrone.TakeOff();
+
+            slARNick.IsEnabled = true;
+            slARRoll.IsEnabled = true;
         }
 
         private void btARStop_Click(object sender, RoutedEventArgs e)
@@ -77,6 +110,9 @@ namespace ARDroneWPFTestApplication
         private void btARLand_Click(object sender, RoutedEventArgs e)
         {
             m_ARDrone.Land();
+
+            slARNick.IsEnabled = false;
+            slARRoll.IsEnabled = false;
         }
 
         private void btARPicture_Click(object sender, RoutedEventArgs e)
@@ -110,6 +146,7 @@ namespace ARDroneWPFTestApplication
             btMKDisconnect.IsEnabled = true;
             btMKConnect.IsEnabled = false;
             btMKPicture.IsEnabled = true;
+            slMKAngle.IsEnabled = true;
         }
 
         private void btStart_Click(object sender, RoutedEventArgs e)
@@ -148,6 +185,12 @@ namespace ARDroneWPFTestApplication
 
         private void btMKDisconnect_Click(object sender, RoutedEventArgs e)
         {
+            if (btMKStopTrack.IsEnabled)
+            {
+                m_Kinect.DisableSkeletonStream();
+                btMKStopTrack.IsEnabled = false;
+            }
+            
             m_Kinect.Disconnect();
 
             SolidColorBrush RedColor = new SolidColorBrush(Colors.Red);
@@ -157,6 +200,7 @@ namespace ARDroneWPFTestApplication
             btMKConnect.IsEnabled = true;
             btStart.IsEnabled = false;
             btMKPicture.IsEnabled = false;
+            slMKAngle.IsEnabled = false;
         }
 
         private void tbOwnIPAddress_LostFocus(object sender, RoutedEventArgs e)
@@ -181,6 +225,11 @@ namespace ARDroneWPFTestApplication
         {
             if (tbARIPAddress.Text == "AR IP-Address")
                 tbARIPAddress.Text = "192.168.1.1";
+        }
+
+        private void TextBoxLog_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            svScrollView.ScrollToEnd();
         }
     }
 }

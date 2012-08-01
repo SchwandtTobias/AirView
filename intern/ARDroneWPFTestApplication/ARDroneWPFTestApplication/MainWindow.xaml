@@ -6,8 +6,8 @@
         <GroupBox Header="Log" Name="gbLog" Height="122" VerticalAlignment="Bottom">
             <Grid>
                 <ScrollViewer 
-                    ScrollViewer.PanningMode="VerticalOnly">
-                    <TextBlock Margin="6,6,6,0" Name="TextBoxLog" VerticalAlignment="Top" />
+                    ScrollViewer.PanningMode="VerticalOnly" Name="svScrollView">
+                    <TextBlock Margin="6,6,6,0" Name="TextBoxLog" VerticalAlignment="Top" SizeChanged="TextBoxLog_SizeChanged" />
                 </ScrollViewer>
             </Grid>
         </GroupBox>
@@ -19,9 +19,9 @@
                 <Button Content="Land" Height="23" HorizontalAlignment="Left" Margin="6,112,0,0" Name="btARLand" VerticalAlignment="Top" Width="75" Click="btARLand_Click" IsEnabled="False" />
                 <Button Content="Trim" HorizontalAlignment="Left" Margin="96,159,0,0" Name="btARTrim" Width="146" Click="btARTrim_Click" Height="23" VerticalAlignment="Top" IsEnabled="False" />
                 <Rectangle Fill="Red" Height="23" HorizontalAlignment="Left" Margin="216,6,0,0" Name="ARDroneStatusIndicator" Stroke="Black" VerticalAlignment="Top" Width="26" />
-                <Slider Height="23" HorizontalAlignment="Left" Margin="96,80,0,0" Name="slARNick" VerticalAlignment="Top" Width="146" ValueChanged="slARNick_ValueChanged" Maximum="1" Minimum="-1" TickPlacement="BottomRight" SmallChange="0.01" />
+                <Slider Height="23" HorizontalAlignment="Left" Margin="96,80,0,0" Name="slARNick" VerticalAlignment="Top" Width="146" ValueChanged="slARNick_ValueChanged" Maximum="1" Minimum="-1" TickPlacement="BottomRight" SmallChange="0.01" IsEnabled="False" />
                 <Label Content="Nick:" HorizontalAlignment="Left" Margin="87,58,0,74" Name="lbARNick" />
-                <Slider Height="23" HorizontalAlignment="Left" Margin="96,123,0,0" Name="slARRoll" VerticalAlignment="Top" Width="146" ValueChanged="slARRoll_ValueChanged" Maximum="1" Minimum="-1" SmallChange="0.01" TickPlacement="BottomRight" />
+                <Slider Height="23" HorizontalAlignment="Left" Margin="96,123,0,0" Name="slARRoll" VerticalAlignment="Top" Width="146" ValueChanged="slARRoll_ValueChanged" Maximum="1" Minimum="-1" SmallChange="0.01" TickPlacement="BottomRight" IsEnabled="False" />
                 <Label Content="Roll:" Height="28" HorizontalAlignment="Left" Margin="87,102,0,0" Name="lbARRoll" VerticalAlignment="Top" />
                 <Button Content="Picture" Height="23" HorizontalAlignment="Left" Margin="6,159,0,0" Name="btARPicture" VerticalAlignment="Top" Width="75" Click="btARPicture_Click" IsEnabled="False" />
                 <TextBox Margin="96,34,48,0" Name="tbARIPAddress" MaxLength="15" Text="AR IP-Address" CharacterCasing="Lower" Height="21" VerticalAlignment="Top" LostFocus="tbARIPAddress_LostFocus" GotFocus="tbARIPAddress_GotFocus" />
@@ -36,7 +36,7 @@
                 <Button Content="Stop Track" Height="23" HorizontalAlignment="Left" Margin="6,81,0,0" Name="btMKStopTrack" VerticalAlignment="Top" Width="75" Click="btMKStopTrack_Click" IsEnabled="False" />
                 <Button Content="Picture" Height="23" HorizontalAlignment="Left" Margin="6,158,0,0" Name="btMKPicture" VerticalAlignment="Top" Width="75" Click="btMKPicture_Click" IsEnabled="False" />
                 <Label Content="Angle:" Height="28" HorizontalAlignment="Left" Margin="87,40,0,0" Name="lbMKAngle" VerticalAlignment="Top" />
-                <Slider Height="23" HorizontalAlignment="Left" Margin="95,61,0,0" Name="slMKAngle" VerticalAlignment="Top" Width="129" ValueChanged="slMKAngle_ValueChanged" Maximum="20" Minimum="-20" SmallChange="1" />
+                <Slider Height="23" HorizontalAlignment="Left" Margin="95,61,0,0" Name="slMKAngle" VerticalAlignment="Top" Width="129" ValueChanged="slMKAngle_ValueChanged" Maximum="20" Minimum="-20" SmallChange="1" IsEnabled="False" />
                 <Button Content="Disconnect" Height="23" HorizontalAlignment="Left" Margin="6,110,0,0" Name="btMKDisconnect" VerticalAlignment="Top" Width="75" Click="btMKDisconnect_Click" IsEnabled="False" />
                 <Image Margin="95,93,6,10" Name="imgMKSkeletonBox" Stretch="Fill" />
             </Grid>

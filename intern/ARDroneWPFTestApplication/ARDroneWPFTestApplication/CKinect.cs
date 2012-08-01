@@ -12,6 +12,8 @@ namespace ARDroneWPFTestApplication
 
     public class CKinect
     {
+        public const float DISTANCE_BARRIER = 20.0f;
+
         public enum KinectState
         {
             Connected = 0,
@@ -264,9 +266,11 @@ namespace ARDroneWPFTestApplication
 
                         if (Math.Abs(HandLeft.Position.X - HandRight.Position.X) > 2 * Math.Abs(Head.Position.Y - Hip.Position.Y))
                         {
+
                             //fly position detected
                             if (m_ArDrone.ActualState != CARDrone.State.Fly && m_ArDrone.ActualState != CARDrone.State.Error)
                             {
+                                m_Logs.Add("[User] user fly\n");
                                 m_ArDrone.TakeOff();
                             }
 
@@ -274,12 +278,14 @@ namespace ARDroneWPFTestApplication
                             float n1 = Hip.Position.Z - Head.Position.Z;
                             float n2 = Hip.Position.X - Head.Position.X;
 
-                            float AngleNick = (float)(Math.Atan(n1 / h) * (360 / (2 * Math.PI)));
-                            float AngleRoll = (float)(Math.Atan(n2 / h) * (360 / (2 * Math.PI)));
+                            float AngleNick = (float)(Math.Atan2(n1, h) * (360 / (2 * Math.PI)));
+                            float AngleRoll = (float)(Math.Atan2(n2, h) * (360 / (2 * Math.PI)));
+
+                            /*float AngleNick = (float)(Math.Atan(n1 / h) * (360 / (2 * Math.PI)));
+                            float AngleRoll = (float)(Math.Atan(n2 / h) * (360 / (2 * Math.PI)));*/
 
                             float Yaw = HandLeft.Position.Z - HandRight.Position.Z;
 
-                            m_Logs.Add("[User] " + AngleNick + " - " + AngleRoll + " - " + Yaw + "\n");
                             //very risky but we can test it
                             //m_ArDrone.Fly(angleRoll, angleNick, yaw, 0.0f);
 
@@ -289,22 +295,26 @@ namespace ARDroneWPFTestApplication
                             float CurrentNickOrientation = 0.0f;
 
 
-                            if (AngleNick > 20)
+                            if (AngleNick > DISTANCE_BARRIER)
                             {
-                                CurrentNickOrientation = -1.0f;
+                                //CurrentNickOrientation = -1.0f;
+                                CurrentNickOrientation = -AngleToARNorm(AngleNick);
                             }
-                            else if (AngleNick < -20)
+                            else if (AngleNick < -DISTANCE_BARRIER)
                             {
-                                CurrentNickOrientation = 1.0f;
+                                //CurrentNickOrientation = 1.0f;
+                                CurrentNickOrientation = AngleToARNorm(AngleNick);
                             }
-                            
-                            if (AngleRoll > 20)
+
+                            if (AngleRoll > DISTANCE_BARRIER)
                             {
-                                CurrentRollOrientation = -1.0f;
+                                //CurrentRollOrientation = -1.0f;
+                                CurrentRollOrientation = -AngleToARNorm(AngleRoll);
                             }
-                            else if (AngleRoll < -20)
+                            else if (AngleRoll < -DISTANCE_BARRIER)
                             {
-                                CurrentRollOrientation = 1.0f;
+                                //CurrentRollOrientation = 1.0f;
+                                CurrentRollOrientation = AngleToARNorm(AngleRoll);
                             }
 
                             if (m_NickOrientation != CurrentNickOrientation)
@@ -329,16 +339,29 @@ namespace ARDroneWPFTestApplication
                     }
                     else
                     {
-                        m_ActualBodyState = BodyState.PositionOnly;
+                        if (m_ActualBodyState != BodyState.PositionOnly)
+                        {
+                            m_ArDrone.Land();
+                        }
 
-                        m_ArDrone.Land();
+                        m_ActualBodyState = BodyState.PositionOnly;
                     }
                 }
                 else
                 {
+                    if (m_ActualBodyState != BodyState.NotTracked)
+                    {
+                        m_ArDrone.Land();
+                    }
+
                     m_ActualBodyState = BodyState.NotTracked;
                 }
             }
+        }
+
+        private float AngleToARNorm(float _Angle)
+        {
+            return (_Angle - DISTANCE_BARRIER) / 30.0f;
         }
     }
 }
