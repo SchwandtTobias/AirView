@@ -19,8 +19,6 @@ namespace ARDroneWPFTestApplication
         // Public
         // --------------------------------------------------------------------------------
 
-        public const int     s_MaxSavedCommands = 2;
-
         public enum State
         {
             Connected = 0,
@@ -117,7 +115,6 @@ namespace ARDroneWPFTestApplication
 
         public void Fly(float _Roll = 0.0f, float _Pitch = 0.0f, float _Yaw = 0.0f, float _Gaz = 0.0f)
         {
-            if (m_Commands.Count >= s_MaxSavedCommands) return;
             if (!m_DroneController.IsFlying) return;
             if (m_ActualState == State.Error) return;
 
@@ -127,7 +124,6 @@ namespace ARDroneWPFTestApplication
 
         public void Pitch(float _Direction = 1.0f)
         {
-            if (m_Commands.Count >= s_MaxSavedCommands) return;
             if (!m_DroneController.IsFlying) return;
             if (m_ActualState == State.Error) return;
 
@@ -137,7 +133,6 @@ namespace ARDroneWPFTestApplication
 
         public void Roll(float _Direction = 1.0f)
         {
-            if (m_Commands.Count >= s_MaxSavedCommands) return;
             if (!m_DroneController.IsFlying) return;
             if (m_ActualState == State.Error) return;
 
@@ -147,7 +142,6 @@ namespace ARDroneWPFTestApplication
 
         public void Yaw(float _Direction = 1.0f)
         {
-            if (m_Commands.Count >= s_MaxSavedCommands) return;
             if (!m_DroneController.IsFlying) return;
             if (m_ActualState == State.Error) return;
 
@@ -157,7 +151,6 @@ namespace ARDroneWPFTestApplication
 
         public void Gaz(float _Direction = 1.0f)
         {
-            if (m_Commands.Count >= s_MaxSavedCommands) return;
             if (!m_DroneController.IsFlying) return;
             if (m_ActualState == State.Error) return;
 
@@ -188,6 +181,12 @@ namespace ARDroneWPFTestApplication
 
         private string              m_ARIPAddress;
 
+        private string              m_RouterName;
+
+        private int                 m_NumberOfCommands;
+
+        private const int           c_MaxNumberOfCommands = 2;
+
 
         public CARDrone()
         {
@@ -199,13 +198,17 @@ namespace ARDroneWPFTestApplication
 
             m_UpdateInterval = 100;
 
+            m_NumberOfCommands = 0;
+
+            m_RouterName = "airview";
+
             try
             {
-                m_Commands = new List<Command>(s_MaxSavedCommands);
+                m_Commands = new List<Command>(c_MaxNumberOfCommands);
 
                 DroneConfig RouterConfig = new DroneConfig();
 
-                RouterConfig.DroneNetworkIdentifierStart = "airview";
+                RouterConfig.DroneNetworkIdentifierStart = m_RouterName;
 
                 m_DroneController = new DroneControl(RouterConfig);
                 
@@ -276,6 +279,8 @@ namespace ARDroneWPFTestApplication
                     m_ActualState = State.Hover;
                 }
 
+                m_NumberOfCommands = 0;
+
                 m_ListLock.ReleaseMutex();
             }
         }
@@ -296,7 +301,11 @@ namespace ARDroneWPFTestApplication
         {
             m_ListLock.WaitOne(1000);
 
-            m_Commands.Add(_Command);
+            int IndeOfCommand = m_NumberOfCommands % c_MaxNumberOfCommands;
+
+            m_Commands.Insert(IndeOfCommand, _Command);
+
+            ++ m_NumberOfCommands;
 
             m_ListLock.ReleaseMutex();
         }
