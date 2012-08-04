@@ -9,10 +9,11 @@ using System.Windows.Media;
 namespace ARDroneWPFTestApplication
 {
     using Microsoft.Kinect;
+    using System.Media;
 
     public class CKinect
     {
-        public const float DISTANCE_BARRIER = 10.0f;
+        public const float DISTANCE_BARRIER = 5.0f;
 
         public enum KinectState
         {
@@ -251,32 +252,39 @@ namespace ARDroneWPFTestApplication
                     if (CurrentSkeleton.TrackingState == SkeletonTrackingState.Tracked)
                     {
                         if (m_ActualBodyState != BodyState.Tracked)
+                        {
+                            SystemSounds.Beep.Play();
                             m_Logs.Add("[User] user tracked\n");
-
+                        }
                         m_ActualBodyState = BodyState.Tracked;
 
-                        Joint Head;
+                        Joint ShoulderCenter;
                         Joint Hip;
                         Joint HandLeft;
                         Joint HandRight;
+                        Joint Head;
 
-                        Head      = CurrentSkeleton.Joints[JointType.Head     ];
+                        ShoulderCenter      = CurrentSkeleton.Joints[JointType.ShoulderCenter     ];
                         Hip       = CurrentSkeleton.Joints[JointType.HipCenter];
                         HandLeft  = CurrentSkeleton.Joints[JointType.HandLeft ];
                         HandRight = CurrentSkeleton.Joints[JointType.HandRight];
+                        Head  = CurrentSkeleton.Joints[JointType.Head];
 
-                        if (Math.Abs(HandLeft.Position.X - HandRight.Position.X) > 2 * Math.Abs(Head.Position.Y - Hip.Position.Y))
+                        if (Math.Abs(HandLeft.Position.X - HandRight.Position.X) > 2 * Math.Abs(ShoulderCenter.Position.Y - Hip.Position.Y))
                         {
-                            float h = Head.Position.Y - Hip.Position.Y;
-                            float n1 = Head.Position.Z - Hip.Position.Z;
-                            float n2 = Head.Position.X - Hip.Position.X;
+                            float h = ShoulderCenter.Position.Y - Hip.Position.Y;
+                            float n1 = ShoulderCenter.Position.Z - Hip.Position.Z;
+                            float n2 = ShoulderCenter.Position.X - Hip.Position.X;
+                            float n3 = ShoulderCenter.Position.Y - HandRight.Position.Y;
+                            float n4 = ShoulderCenter.Position.X - HandRight.Position.X;
 
+                            
                             //fly position detected
                             if (m_ArDrone.ActualState != CARDrone.State.Fly && m_ArDrone.ActualState != CARDrone.State.Error && !m_isTakeOff)
                             {
                                 m_isTakeOff = true;
                                 m_NickOrientation = (float)(Math.Atan(n1 / h) * (360 / (2 * Math.PI)));
-                                m_RollOrientation = (float)(Math.Atan(n2 / h) * (360 / (2 * Math.PI)));
+                                m_RollOrientation = (float)(Math.Tan(n3 / n4) * (360 / (2 * Math.PI)));
                                 m_ArDrone.TakeOff();
                             }
 
@@ -284,9 +292,9 @@ namespace ARDroneWPFTestApplication
                             //float AngleRoll = (float)(Math.Atan2(n2, h) * (360 / (2 * Math.PI)));
 
                             float AngleNick = m_NickOrientation - (float)(Math.Atan(n1 / h) * (360 / (2 * Math.PI)));
-                            float AngleRoll = m_RollOrientation - (float)(Math.Atan(n2 / h) * (360 / (2 * Math.PI)));
+                            float AngleRoll = (float)(Math.Tan(n3 / n4) * (360 / (2 * Math.PI)));
 
-                            //System.Console.WriteLine("Nick " + AngleNick + " Roll " + AngleRoll);
+                            System.Console.WriteLine("Nick " + AngleNick + " Roll " + AngleRoll);
                             float Yaw = HandLeft.Position.Z - HandRight.Position.Z;
 
                             //very risky but we can test it
@@ -297,7 +305,7 @@ namespace ARDroneWPFTestApplication
                             float CurrentRollOrientation = 0.0f;
                             float CurrentNickOrientation = 0.0f;
 
-
+                            
                             if (AngleNick > -DISTANCE_BARRIER)
                             {
                                 //CurrentNickOrientation = -1.0f;
@@ -308,7 +316,7 @@ namespace ARDroneWPFTestApplication
                                 //CurrentNickOrientation = 1.0f;
                                 CurrentNickOrientation = -AngleToARNorm(AngleNick);
                             }
-
+                            
                             if (AngleRoll > DISTANCE_BARRIER)
                             {
                                 //CurrentRollOrientation = -1.0f;
@@ -342,6 +350,7 @@ namespace ARDroneWPFTestApplication
                         {
 
                             m_isTakeOff = false;
+                            m_ArDrone.Fly(0.0f, 0.0f, 0.0f, 0.0f);
                             //land position detected
                             m_ArDrone.Land();
                         }
