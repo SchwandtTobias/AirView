@@ -127,12 +127,12 @@ namespace ARDroneWPFTestApplication
 
         private void slARRoll_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            
+            m_ARDrone.Fly((float)slARNick.Value, (float)slARRoll.Value, 0.0f, 0.0f);
         }
 
         private void slARNick_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            
+            m_ARDrone.Fly((float)slARNick.Value, (float)slARRoll.Value, 0.0f, 0.0f);
         }
 
         private void btMKConnect_Click(object sender, RoutedEventArgs e)
@@ -230,6 +230,16 @@ namespace ARDroneWPFTestApplication
         private void TextBoxLog_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             svScrollView.ScrollToEnd();
+        }
+
+        private void slARNick_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            slARNick.Value = 0.0f;
+        }
+
+        private void slARRoll_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            slARRoll.Value = 0.0f;
         }
     }
 }

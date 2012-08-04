@@ -120,9 +120,9 @@ namespace ARDroneWPFTestApplication
 
             m_ListLock.WaitOne(1000);
             
-            System.Console.WriteLine("Roll: " + _Roll + " Nick: "+ _Pitch + " Yaw: " + _Yaw);
+            //System.Console.WriteLine("Roll: " + _Roll + " Nick: "+ _Pitch + " Yaw: " + _Yaw);
 
-            m_CurrentCommand = new FlightMoveCommand(_Roll, _Pitch, _Yaw, _Gaz);
+            m_CurrentCommand = new FlightMoveCommand(_Pitch, _Roll, _Yaw, _Gaz);
 
             m_ListLock.ReleaseMutex();
         }
