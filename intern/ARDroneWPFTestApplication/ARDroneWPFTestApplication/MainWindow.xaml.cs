@@ -67,8 +67,8 @@ namespace ARDroneWPFTestApplication
 
             m_ARDrone.Connect();
 
-            if (m_ARDrone.ActualState == CARDrone.State.Connected)
-            {
+            //if (m_ARDrone.ActualState == CARDrone.State.Connected)
+            //{
                 btARConnect.Content = "Disconnect";
 
                 SolidColorBrush GreenColor = new SolidColorBrush(Colors.Green);
@@ -78,9 +78,9 @@ namespace ARDroneWPFTestApplication
                 btARLand.IsEnabled = true;
                 btARStop.IsEnabled = true;
                 btARTrim.IsEnabled = true;
-            }
-            else
-            {
+            //}
+            //else
+            /*{
                 btARConnect.Content = "Connect";
 
                 SolidColorBrush GreenColor = new SolidColorBrush(Colors.Red);
@@ -90,7 +90,7 @@ namespace ARDroneWPFTestApplication
                 btARLand.IsEnabled = false;
                 btARStop.IsEnabled = false;
                 btARTrim.IsEnabled = false;
-            }
+            }*/
             
         }
 

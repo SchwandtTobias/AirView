@@ -110,7 +110,7 @@ namespace ARDroneWPFTestApplication
             }
             catch (System.Exception ex)
             {
-            	
+                m_Logs.Add(ex.StackTrace + "\n");
             }
            
         }
@@ -270,7 +270,6 @@ namespace ARDroneWPFTestApplication
                             //fly position detected
                             if (m_ArDrone.ActualState != CARDrone.State.Fly && m_ArDrone.ActualState != CARDrone.State.Error)
                             {
-                                m_Logs.Add("[User] user fly\n");
                                 m_ArDrone.TakeOff();
                             }
 
@@ -300,10 +299,10 @@ namespace ARDroneWPFTestApplication
                                 //CurrentNickOrientation = -1.0f;
                                 CurrentNickOrientation = -AngleToARNorm(AngleNick);
                             }
-                            else if (AngleNick < -DISTANCE_BARRIER)
+                            else if (AngleNick < -DISTANCE_BARRIER + 10)
                             {
                                 //CurrentNickOrientation = 1.0f;
-                                CurrentNickOrientation = AngleToARNorm(AngleNick);
+                                CurrentNickOrientation = AngleToARNorm(AngleNick) / 2;
                             }
 
                             if (AngleRoll > DISTANCE_BARRIER)
@@ -317,19 +316,23 @@ namespace ARDroneWPFTestApplication
                                 CurrentRollOrientation = AngleToARNorm(AngleRoll);
                             }
 
-                            if (m_NickOrientation != CurrentNickOrientation)
-                            {
-                                m_NickOrientation = CurrentNickOrientation;
+                            //m_Logs.Add("Nick: " + CurrentNickOrientation + "\n");
 
-                                m_ArDrone.Pitch(m_NickOrientation);
-                            }
+                            m_ArDrone.Fly(CurrentRollOrientation, CurrentNickOrientation, 0.0f, 0.0f);
 
-                            if (m_RollOrientation != CurrentRollOrientation)
-                            {
-                                m_RollOrientation = CurrentRollOrientation;
+                            //if (m_NickOrientation != CurrentNickOrientation)
+                            //{
+                            //    m_NickOrientation = CurrentNickOrientation;
 
-                                m_ArDrone.Roll(m_RollOrientation);
-                            }
+                            //    m_ArDrone.Pitch(m_NickOrientation);
+                            //}
+
+                            //if (m_RollOrientation != CurrentRollOrientation)
+                            //{
+                            //    m_RollOrientation = CurrentRollOrientation;
+
+                            //    m_ArDrone.Roll(m_RollOrientation);
+                            //}
                         }
                         else
                         {
@@ -361,7 +364,7 @@ namespace ARDroneWPFTestApplication
 
         private float AngleToARNorm(float _Angle)
         {
-            return (_Angle - DISTANCE_BARRIER) / 30.0f;
+            return (_Angle - DISTANCE_BARRIER) / 50.0f;
         }
     }
 }

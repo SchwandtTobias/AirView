@@ -118,8 +118,13 @@ namespace ARDroneWPFTestApplication
             if (!m_DroneController.IsFlying) return;
             if (m_ActualState == State.Error) return;
 
-            Command command = new FlightMoveCommand(_Roll, _Pitch, _Yaw, _Gaz);
-            AddCommand(command);
+            m_ListLock.WaitOne(1000);
+            
+            System.Console.WriteLine("Roll: " + _Roll + " Nick: "+ _Pitch + " Yaw: " + _Yaw);
+
+            m_CurrentCommand = new FlightMoveCommand(_Roll, _Pitch, _Yaw, _Gaz);
+
+            m_ListLock.ReleaseMutex();
         }
 
         public void Pitch(float _Direction = 1.0f)
@@ -187,6 +192,8 @@ namespace ARDroneWPFTestApplication
 
         private const int           c_MaxNumberOfCommands = 2;
 
+        private Command             m_CurrentCommand;
+
 
         public CARDrone()
         {
@@ -200,7 +207,9 @@ namespace ARDroneWPFTestApplication
 
             m_NumberOfCommands = 0;
 
-            m_RouterName = "airview";
+            m_RouterName = "ardrone_";
+
+            m_CurrentCommand = null;
 
             try
             {
@@ -210,7 +219,7 @@ namespace ARDroneWPFTestApplication
 
                 RouterConfig.DroneNetworkIdentifierStart = m_RouterName;
 
-                m_DroneController = new DroneControl(RouterConfig);
+                m_DroneController = new DroneControl();
                 
                 m_DroneController.NetworkConnectionStateChanged += new DroneNetworkConnectionStateChangedEventHandler(NetworkConnectionStateChanged);
 
@@ -263,16 +272,20 @@ namespace ARDroneWPFTestApplication
 
                 m_ListLock.WaitOne(1000);
 
-                if (m_Commands.Count > 0)
+                if (m_CurrentCommand != null)
                 {
                     m_ActualState = State.Fly;
 
-                    foreach (Command CurrentCommand in m_Commands)
-                    {
-                        m_DroneController.SendCommand(CurrentCommand);
-                    }
+                    //foreach (Command CurrentCommand in m_Commands)
+                    //{
+                    //    m_DroneController.SendCommand(CurrentCommand);
+                    //}
 
-                    m_Commands.Clear();
+                    //m_Commands.Clear();
+
+                    m_DroneController.SendCommand(m_CurrentCommand);
+
+                    m_CurrentCommand = null;
                 }
                 else
                 {
