@@ -10,6 +10,7 @@ namespace ARDroneWPFTestApplication
 {
     using Microsoft.Kinect;
     using System.Media;
+    using System.Windows;
 
     public class CKinect
     {
@@ -262,6 +263,7 @@ namespace ARDroneWPFTestApplication
                         Joint Hip;
                         Joint HandLeft;
                         Joint HandRight;
+                        Joint ShoulderRight;
                         Joint Head;
 
                         ShoulderCenter      = CurrentSkeleton.Joints[JointType.ShoulderCenter     ];
@@ -270,13 +272,29 @@ namespace ARDroneWPFTestApplication
                         HandRight = CurrentSkeleton.Joints[JointType.HandRight];
                         Head  = CurrentSkeleton.Joints[JointType.Head];
 
-                        if (Math.Abs(HandLeft.Position.X - HandRight.Position.X) > 2 * Math.Abs(ShoulderCenter.Position.Y - Hip.Position.Y))
+                        float LengthBetweenArms = Math.Abs(HandLeft.Position.X - HandRight.Position.X);
+                        float TorsoHeight = Math.Abs(ShoulderCenter.Position.Y - Hip.Position.Y);
+
+                        Vector VLeftArm = new Vector(HandLeft.Position.X - ShoulderCenter.Position.X, HandLeft.Position.Y - ShoulderCenter.Position.Y);
+                        Vector VRightArm = new Vector(HandRight.Position.X - ShoulderCenter.Position.X, HandRight.Position.Y - ShoulderCenter.Position.Y);
+                        Vector VShoulderCenter = new Vector(ShoulderCenter.Position.X - Hip.Position.X, ShoulderCenter.Position.Y - Hip.Position.Y);
+
+                        VLeftArm.Normalize();
+                        VRightArm.Normalize();
+                        VShoulderCenter.Normalize();
+
+                        float LeftCenterScal = (float)(VLeftArm * VShoulderCenter);
+                        float RightCenterScal = (float)(VRightArm * VShoulderCenter);
+
+                        //System.Console.WriteLine("Left " + LeftCenterScal + " Right " + RightCenterScal);
+
+                        if (Math.Abs(LeftCenterScal) < 0.4 && Math.Abs(RightCenterScal) < 0.4)
                         {
                             float h = ShoulderCenter.Position.Y - Hip.Position.Y;
                             float n1 = ShoulderCenter.Position.Z - Hip.Position.Z;
                             float n2 = ShoulderCenter.Position.X - Hip.Position.X;
-                            float n3 = ShoulderCenter.Position.Y - HandRight.Position.Y;
-                            float n4 = ShoulderCenter.Position.X - HandRight.Position.X;
+                            float n3 = Head.Position.Y - Hip.Position.Y;
+                            float n4 = Head.Position.X - Hip.Position.X;
 
                             
                             //fly position detected
@@ -284,7 +302,7 @@ namespace ARDroneWPFTestApplication
                             {
                                 m_isTakeOff = true;
                                 m_NickOrientation = (float)(Math.Atan(n1 / h) * (360 / (2 * Math.PI)));
-                                m_RollOrientation = (float)(Math.Tan(n3 / n4) * (360 / (2 * Math.PI)));
+                                m_RollOrientation = (float)(Math.Tan(n2 / h) * (360 / (2 * Math.PI)));
                                 m_ArDrone.TakeOff();
                             }
 
@@ -292,9 +310,9 @@ namespace ARDroneWPFTestApplication
                             //float AngleRoll = (float)(Math.Atan2(n2, h) * (360 / (2 * Math.PI)));
 
                             float AngleNick = m_NickOrientation - (float)(Math.Atan(n1 / h) * (360 / (2 * Math.PI)));
-                            float AngleRoll = (float)(Math.Tan(n3 / n4) * (360 / (2 * Math.PI)));
+                            float AngleRoll = m_RollOrientation - (float)(Math.Tan(n2 / h) * (360 / (2 * Math.PI)));
 
-                            System.Console.WriteLine("Nick " + AngleNick + " Roll " + AngleRoll);
+                            //System.Console.WriteLine("Nick " + AngleNick + " Roll " + AngleRoll);
                             float Yaw = HandLeft.Position.Z - HandRight.Position.Z;
 
                             //very risky but we can test it

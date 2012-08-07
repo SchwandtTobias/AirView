@@ -48,7 +48,7 @@ namespace ARDroneWPFTestApplication
         {
             TextBoxLog.Text = m_Kinect.GetLogs();
 
-            m_Logger.RunWorkerAsync();
+            //m_Logger.RunWorkerAsync();
         }
 
         private void btARConnect_Click(object sender, RoutedEventArgs e)
@@ -56,9 +56,9 @@ namespace ARDroneWPFTestApplication
             SolidColorBrush YellowColor = new SolidColorBrush(Colors.Yellow);
             ARDroneStatusIndicator.Fill = YellowColor;
 
-            if (tbOwnIPAddress.Text == "" && tbARIPAddress.Text == "")
+            if (tbOwnIPAddress.Text == "")
             {
-                m_ARDrone.SetIpAddress("192.168.1.2", "192.168.1.1");
+                m_ARDrone.SetIpAddress("192.168.1.2", tbARIPAddress.Text);
             }
             else
             {
@@ -67,31 +67,16 @@ namespace ARDroneWPFTestApplication
 
             m_ARDrone.Connect();
 
-            //if (m_ARDrone.ActualState == CARDrone.State.Connected)
-            //{
-                btARConnect.Content = "Disconnect";
+            SolidColorBrush GreenColor = new SolidColorBrush(Colors.Green);
+            ARDroneStatusIndicator.Fill = GreenColor;
 
-                SolidColorBrush GreenColor = new SolidColorBrush(Colors.Green);
-                ARDroneStatusIndicator.Fill = GreenColor;
-
-                btARTakeOff.IsEnabled = true;
-                btARLand.IsEnabled = true;
-                btARStop.IsEnabled = true;
-                btARTrim.IsEnabled = true;
-            //}
-            //else
-            /*{
-                btARConnect.Content = "Connect";
-
-                SolidColorBrush GreenColor = new SolidColorBrush(Colors.Red);
-                ARDroneStatusIndicator.Fill = GreenColor;
-
-                btARTakeOff.IsEnabled = false;
-                btARLand.IsEnabled = false;
-                btARStop.IsEnabled = false;
-                btARTrim.IsEnabled = false;
-            }*/
-            
+            btARConnect.IsEnabled = false;
+            btARDisconnet.IsEnabled = true;
+            btARTakeOff.IsEnabled = true;
+            btARLand.IsEnabled = true;
+            btARStop.IsEnabled = true;
+            btARTrim.IsEnabled = true;
+       
         }
 
         private void btARTakeOff_Click(object sender, RoutedEventArgs e)
@@ -203,30 +188,6 @@ namespace ARDroneWPFTestApplication
             slMKAngle.IsEnabled = false;
         }
 
-        private void tbOwnIPAddress_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (tbOwnIPAddress.Text == "")
-                tbOwnIPAddress.Text = "Own IP-Address";
-        }
-
-        private void tbOwnIPAddress_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (tbOwnIPAddress.Text == "Own IP-Address")
-                tbOwnIPAddress.Text = "192.168.1.2";
-        }
-
-        private void tbARIPAddress_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (tbARIPAddress.Text == "")
-                tbARIPAddress.Text = "AR IP-Address";
-        }
-
-        private void tbARIPAddress_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (tbARIPAddress.Text == "AR IP-Address")
-                tbARIPAddress.Text = "192.168.1.1";
-        }
-
         private void TextBoxLog_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             svScrollView.ScrollToEnd();
@@ -240,6 +201,23 @@ namespace ARDroneWPFTestApplication
         private void slARRoll_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             slARRoll.Value = 0.0f;
+        }
+
+        private void btARDisconnet_Click(object sender, RoutedEventArgs e)
+        {
+            SolidColorBrush YellowColor = new SolidColorBrush(Colors.Red);
+            ARDroneStatusIndicator.Fill = YellowColor;
+
+            m_ARDrone.Land();
+
+            m_ARDrone.Disconnect();
+
+            btARConnect.IsEnabled = true;
+            btARDisconnet.IsEnabled = false;
+            btARTakeOff.IsEnabled = false;
+            btARLand.IsEnabled = false;
+            btARStop.IsEnabled = false;
+            btARTrim.IsEnabled = false;
         }
     }
 }

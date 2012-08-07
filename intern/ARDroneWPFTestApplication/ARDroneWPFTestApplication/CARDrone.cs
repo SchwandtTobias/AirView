@@ -48,6 +48,11 @@ namespace ARDroneWPFTestApplication
             }
         }
 
+        public void Disconnect()
+        {
+            m_DroneController.Disconnect();
+        }
+
         public void SetIpAddress(String _OwnIPAddress, String _ARIPAddress)
         {
             m_OwnIPAddress = _OwnIPAddress;
@@ -217,9 +222,11 @@ namespace ARDroneWPFTestApplication
 
                 DroneConfig RouterConfig = new DroneConfig();
 
+                RouterConfig.StandardOwnIpAddress = m_OwnIPAddress;
+
                 RouterConfig.DroneNetworkIdentifierStart = m_RouterName;
 
-                m_DroneController = new DroneControl();
+                m_DroneController = new DroneControl(RouterConfig);
                 
                 m_DroneController.NetworkConnectionStateChanged += new DroneNetworkConnectionStateChangedEventHandler(NetworkConnectionStateChanged);
 
