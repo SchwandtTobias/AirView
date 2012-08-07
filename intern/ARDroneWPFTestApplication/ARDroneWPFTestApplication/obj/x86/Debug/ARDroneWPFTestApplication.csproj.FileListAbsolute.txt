@@ -1,0 +1,15 @@
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\bin\Debug\ARDroneWPFTestApplication.exe
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\bin\Debug\ARDroneWPFTestApplication.pdb
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\bin\Debug\ARDrone.Control.dll
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\bin\Debug\ARDroneBasics.dll
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\obj\x86\Debug\MainWindow.baml
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\obj\x86\Debug\MainWindow.g.cs
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\obj\x86\Debug\App.g.cs
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\obj\x86\Debug\ARDroneWPFTestApplication_MarkupCompile.cache
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\obj\x86\Debug\ARDroneWPFTestApplication.g.resources
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\obj\x86\Debug\ARDroneWPFTestApplication.Properties.Resources.resources
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\obj\x86\Debug\ARDroneWPFTestApplication.exe
+C:\Users\lge\Desktop\airview\intern\ARDroneWPFTestApplication\ARDroneWPFTestApplication\obj\x86\Debug\ARDroneWPFTestApplication.pdb
