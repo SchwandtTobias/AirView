@@ -76,6 +76,7 @@ namespace ARDroneWPFTestApplication
             btARLand.IsEnabled = true;
             btARStop.IsEnabled = true;
             btARTrim.IsEnabled = true;
+            btARPicture.IsEnabled = true;
        
         }
 
@@ -102,6 +103,15 @@ namespace ARDroneWPFTestApplication
 
         private void btARPicture_Click(object sender, RoutedEventArgs e)
         {
+            System.Drawing.Bitmap ARDroneImage = null;
+
+            m_ARDrone.VideoStream(out ARDroneImage);
+
+            if (ARDroneImage != null)
+            {
+
+            }
+
 
         }
 
@@ -158,9 +168,7 @@ namespace ARDroneWPFTestApplication
 
         private void btMKPicture_Click(object sender, RoutedEventArgs e)
         {
-
             imgMKSkeletonBox.Source = m_Kinect.GetSkeletonPictureContext();
-
         }
 
         private void slMKAngle_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -218,6 +226,7 @@ namespace ARDroneWPFTestApplication
             btARLand.IsEnabled = false;
             btARStop.IsEnabled = false;
             btARTrim.IsEnabled = false;
+            btARPicture.IsEnabled = false;
         }
     }
 }

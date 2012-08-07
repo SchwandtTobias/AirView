@@ -59,6 +59,27 @@ namespace ARDroneWPFTestApplication
             m_ARIPAddress = _ARIPAddress;
         }
 
+        public int VideoStream(out System.Drawing.Bitmap _Stream)
+        {
+            _Stream = null;
+
+            if (m_DroneController.CanSwitchCamera && !m_IsCameraOnline)
+            {
+                SwitchCameraCommand CameraCommand = new SwitchCameraCommand(DroneCameraMode.FrontCamera);
+
+                m_IsCameraOnline = true;
+
+                return 1;
+            } 
+            else if (m_IsCameraOnline && m_DroneController.BitmapImage != null)
+            {
+                _Stream = m_DroneController.BitmapImage;
+
+                return 0;
+            }
+            return -1;
+        }
+
         #region FlyModeCommands
 
         public void TakeOff()
@@ -199,6 +220,8 @@ namespace ARDroneWPFTestApplication
 
         private Command             m_CurrentCommand;
 
+        private bool m_IsCameraOnline;
+
 
         public CARDrone()
         {
@@ -215,6 +238,8 @@ namespace ARDroneWPFTestApplication
             m_RouterName = "ardrone_";
 
             m_CurrentCommand = null;
+
+            m_IsCameraOnline = false;
 
             try
             {
@@ -282,13 +307,6 @@ namespace ARDroneWPFTestApplication
                 if (m_CurrentCommand != null)
                 {
                     m_ActualState = State.Fly;
-
-                    //foreach (Command CurrentCommand in m_Commands)
-                    //{
-                    //    m_DroneController.SendCommand(CurrentCommand);
-                    //}
-
-                    //m_Commands.Clear();
 
                     m_DroneController.SendCommand(m_CurrentCommand);
 

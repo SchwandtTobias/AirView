@@ -239,161 +239,345 @@ namespace ARDroneWPFTestApplication
 
         private void SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
-            using (SkeletonFrame CurrentSkeletonFrame = e.OpenSkeletonFrame())
+            Skeleton[] skeletons = new Skeleton[0];
+
+            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
             {
-                if (CurrentSkeletonFrame != null && CurrentSkeletonFrame.SkeletonArrayLength > 0)
+                if (skeletonFrame != null)
                 {
-                    m_CurrentSkeletons = new Skeleton[CurrentSkeletonFrame.SkeletonArrayLength];
+                    skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
+                    skeletonFrame.CopySkeletonDataTo(skeletons);
+                }
+            }
 
-                    CurrentSkeletonFrame.CopySkeletonDataTo(m_CurrentSkeletons);
+            // there skeleton availible?
+            if (skeletons.Length != 0)
+            {
+                // is one of this skeleton do the flying gesture
+                Skeleton CurrentSkeleton = null;
 
-                    Skeleton CurrentSkeleton = m_CurrentSkeletons[0];
-
-
-                    if (CurrentSkeleton.TrackingState == SkeletonTrackingState.Tracked)
+                foreach (Skeleton Skeleton in skeletons)
+                {
+                    if (Skeleton.TrackingState == SkeletonTrackingState.Tracked)
                     {
-                        if (m_ActualBodyState != BodyState.Tracked)
+                        if (this.isSkeletonAllowedToControl(Skeleton))
                         {
-                            SystemSounds.Beep.Play();
-                            m_Logs.Add("[User] user tracked\n");
-                        }
-                        m_ActualBodyState = BodyState.Tracked;
-
-                        Joint ShoulderCenter;
-                        Joint Hip;
-                        Joint HandLeft;
-                        Joint HandRight;
-                        Joint ShoulderRight;
-                        Joint Head;
-
-                        ShoulderCenter      = CurrentSkeleton.Joints[JointType.ShoulderCenter     ];
-                        Hip       = CurrentSkeleton.Joints[JointType.HipCenter];
-                        HandLeft  = CurrentSkeleton.Joints[JointType.HandLeft ];
-                        HandRight = CurrentSkeleton.Joints[JointType.HandRight];
-                        Head  = CurrentSkeleton.Joints[JointType.Head];
-
-                        float LengthBetweenArms = Math.Abs(HandLeft.Position.X - HandRight.Position.X);
-                        float TorsoHeight = Math.Abs(ShoulderCenter.Position.Y - Hip.Position.Y);
-
-                        Vector VLeftArm = new Vector(HandLeft.Position.X - ShoulderCenter.Position.X, HandLeft.Position.Y - ShoulderCenter.Position.Y);
-                        Vector VRightArm = new Vector(HandRight.Position.X - ShoulderCenter.Position.X, HandRight.Position.Y - ShoulderCenter.Position.Y);
-                        Vector VShoulderCenter = new Vector(ShoulderCenter.Position.X - Hip.Position.X, ShoulderCenter.Position.Y - Hip.Position.Y);
-
-                        VLeftArm.Normalize();
-                        VRightArm.Normalize();
-                        VShoulderCenter.Normalize();
-
-                        float LeftCenterScal = (float)(VLeftArm * VShoulderCenter);
-                        float RightCenterScal = (float)(VRightArm * VShoulderCenter);
-
-                        //System.Console.WriteLine("Left " + LeftCenterScal + " Right " + RightCenterScal);
-
-                        if (Math.Abs(LeftCenterScal) < 0.4 && Math.Abs(RightCenterScal) < 0.4)
-                        {
-                            float h = ShoulderCenter.Position.Y - Hip.Position.Y;
-                            float n1 = ShoulderCenter.Position.Z - Hip.Position.Z;
-                            float n2 = ShoulderCenter.Position.X - Hip.Position.X;
-                            float n3 = Head.Position.Y - Hip.Position.Y;
-                            float n4 = Head.Position.X - Hip.Position.X;
-
-                            
-                            //fly position detected
-                            if (m_ArDrone.ActualState != CARDrone.State.Fly && m_ArDrone.ActualState != CARDrone.State.Error && !m_isTakeOff)
-                            {
-                                m_isTakeOff = true;
-                                m_NickOrientation = (float)(Math.Atan(n1 / h) * (360 / (2 * Math.PI)));
-                                m_RollOrientation = (float)(Math.Tan(n2 / h) * (360 / (2 * Math.PI)));
-                                m_ArDrone.TakeOff();
-                            }
-
-                            //float AngleNick = (float)(Math.Atan2(n1, h) * (360 / (2 * Math.PI)));
-                            //float AngleRoll = (float)(Math.Atan2(n2, h) * (360 / (2 * Math.PI)));
-
-                            float AngleNick = m_NickOrientation - (float)(Math.Atan(n1 / h) * (360 / (2 * Math.PI)));
-                            float AngleRoll = m_RollOrientation - (float)(Math.Tan(n2 / h) * (360 / (2 * Math.PI)));
-
-                            //System.Console.WriteLine("Nick " + AngleNick + " Roll " + AngleRoll);
-                            float Yaw = HandLeft.Position.Z - HandRight.Position.Z;
-
-                            //very risky but we can test it
-                            //m_ArDrone.Fly(angleRoll, angleNick, yaw, 0.0f);
-
-                            //not so risky but must be tested too
-                            //it can only be done one of these
-                            float CurrentRollOrientation = 0.0f;
-                            float CurrentNickOrientation = 0.0f;
-
-                            
-                            if (AngleNick > -DISTANCE_BARRIER)
-                            {
-                                //CurrentNickOrientation = -1.0f;
-                                CurrentNickOrientation = -AngleToARNorm(AngleNick);
-                            }
-                            else if (AngleNick < DISTANCE_BARRIER)
-                            {
-                                //CurrentNickOrientation = 1.0f;
-                                CurrentNickOrientation = -AngleToARNorm(AngleNick);
-                            }
-                            
-                            if (AngleRoll > DISTANCE_BARRIER)
-                            {
-                                //CurrentRollOrientation = -1.0f;
-                                CurrentRollOrientation = -AngleToARNorm(AngleRoll);
-                            }
-                            else if (AngleRoll < -DISTANCE_BARRIER)
-                            {
-                                //CurrentRollOrientation = 1.0f;
-                                CurrentRollOrientation = -AngleToARNorm(AngleRoll);
-                            }
-
-                            //m_Logs.Add("Nick: " + CurrentNickOrientation + "\n");
-
-                            m_ArDrone.Fly(CurrentNickOrientation, CurrentRollOrientation, 0.0f, 0.0f);
-
-                            //if (m_NickOrientation != CurrentNickOrientation)
-                            //{
-                            //    m_NickOrientation = CurrentNickOrientation;
-
-                            //    m_ArDrone.Pitch(m_NickOrientation);
-                            //}
-
-                            //if (m_RollOrientation != CurrentRollOrientation)
-                            //{
-                            //    m_RollOrientation = CurrentRollOrientation;
-
-                            //    m_ArDrone.Roll(m_RollOrientation);
-                            //}
-                        }
-                        else
-                        {
-
-                            m_isTakeOff = false;
-                            m_ArDrone.Fly(0.0f, 0.0f, 0.0f, 0.0f);
-                            //land position detected
-                            m_ArDrone.Land();
+                            CurrentSkeleton = Skeleton;
+                            break;
                         }
                     }
-                    else
-                    {
-                        if (m_ActualBodyState != BodyState.PositionOnly)
-                        {
-                            m_ArDrone.Land();
-                        }
+                }
 
-                        m_ActualBodyState = BodyState.PositionOnly;
+                // fly !!
+                if (CurrentSkeleton != null)
+                {
+                    Joint ShoulderCenter = CurrentSkeleton.Joints[JointType.ShoulderCenter];
+                    Joint Hip = CurrentSkeleton.Joints[JointType.HipCenter];
+                    Joint HandLeft = CurrentSkeleton.Joints[JointType.HandLeft];
+                    Joint HandRight = CurrentSkeleton.Joints[JointType.HandRight];
+                    Joint Head = CurrentSkeleton.Joints[JointType.Head];
+
+                    float h = ShoulderCenter.Position.Y - Hip.Position.Y;
+                    float n1 = ShoulderCenter.Position.Z - Hip.Position.Z;
+                    float n2 = ShoulderCenter.Position.X - Hip.Position.X;
+
+                    if (m_ArDrone != null && m_ArDrone.ActualState != CARDrone.State.Fly && m_ArDrone.ActualState != CARDrone.State.Error && !m_isTakeOff)
+                    {
+                        // send take of to drone
+                        m_NickOrientation = (float)(Math.Atan(n1 / h) * (360 / (2 * Math.PI)));
+                        m_RollOrientation = (float)(Math.Tan(n2 / h) * (360 / (2 * Math.PI)));
+
+                        this.sendTakeOffCommandToDrone();
+                    }
+
+                    // send take of to drone
+                    float AngleNick = m_NickOrientation - (float)(Math.Atan(n1 / h) * (360 / (2 * Math.PI)));
+                    float AngleRoll = m_RollOrientation - (float)(Math.Tan(n2 / h) * (360 / (2 * Math.PI)));
+
+                    //System.Console.WriteLine("Nick " + AngleNick + " Roll " + AngleRoll);
+                    float Yaw = HandLeft.Position.Z - HandRight.Position.Z;
+
+                    //very risky but we can test it
+                    //m_ArDrone.Fly(angleRoll, angleNick, yaw, 0.0f);
+
+                    //not so risky but must be tested too
+                    //it can only be done one of these
+                    float CurrentRollOrientation = 0.0f;
+                    float CurrentNickOrientation = 0.0f;
+
+
+                    if (AngleNick > -DISTANCE_BARRIER)
+                    {
+                        CurrentNickOrientation = -AngleToARNorm(AngleNick);
+                    }
+                    else if (AngleNick < DISTANCE_BARRIER)
+                    {
+                        CurrentNickOrientation = -AngleToARNorm(AngleNick);
+                    }
+
+                    if (AngleRoll > DISTANCE_BARRIER)
+                    {
+                        CurrentRollOrientation = -AngleToARNorm(AngleRoll);
+                    }
+                    else if (AngleRoll < -DISTANCE_BARRIER)
+                    {
+                        CurrentRollOrientation = -AngleToARNorm(AngleRoll);
+                    }
+
+                    if (m_ArDrone != null)
+                    {
+                        try
+                        {
+                            m_ArDrone.Fly(CurrentNickOrientation, CurrentRollOrientation, 0.0f, 0.0f);
+                        }
+                        catch (Exception exception)
+                        {
+                            // do something
+                        }
                     }
                 }
                 else
                 {
-                    if (m_ActualBodyState != BodyState.NotTracked)
-                    {
-                        m_ArDrone.Land();
-                    }
-
-                    m_ActualBodyState = BodyState.NotTracked;
+                    this.sendLandingCommandToDrone();
                 }
             }
+            else
+            {
+                this.sendLandingCommandToDrone();
+            }
+            
         }
+
+        private void sendTakeOffCommandToDrone()
+        {
+            System.Console.WriteLine("Drone is doing a take off");
+            m_isTakeOff = true;
+            // send take off to drone
+            try
+            {
+                if (m_ArDrone != null)
+                {
+                    m_ArDrone.TakeOff();
+                }
+            }
+            catch (Exception exeption)
+            {
+                // do somethign
+            }
+        }
+
+        private void sendLandingCommandToDrone()
+        {
+            System.Console.WriteLine("Drone is landing");
+            m_isTakeOff = false;
+             // send landing to drone
+            try
+            {
+                if (m_ArDrone != null)
+                {
+                    m_ArDrone.Fly(0.0f, 0.0f, 0.0f, 0.0f);
+                    m_ArDrone.Land();
+                }
+            }
+            catch (Exception exeption)
+            {
+                // do somethign
+            }
+        }
+
+        private bool isSkeletonAllowedToControl(Skeleton CurrentSkeleton)
+        {
+            // get needed tacking points to calculate gestures
+            Joint ShoulderCenter = CurrentSkeleton.Joints[JointType.ShoulderCenter];
+            Joint Hip = CurrentSkeleton.Joints[JointType.HipCenter];
+            Joint HandLeft = CurrentSkeleton.Joints[JointType.HandLeft];
+            Joint HandRight = CurrentSkeleton.Joints[JointType.HandRight];
+
+            // check pilot command
+            Vector VLeftArm = new Vector(HandLeft.Position.X - ShoulderCenter.Position.X, HandLeft.Position.Y - ShoulderCenter.Position.Y);
+            Vector VRightArm = new Vector(HandRight.Position.X - ShoulderCenter.Position.X, HandRight.Position.Y - ShoulderCenter.Position.Y);
+            Vector VShoulderCenter = new Vector(ShoulderCenter.Position.X - Hip.Position.X, ShoulderCenter.Position.Y - Hip.Position.Y);
+
+            VLeftArm.Normalize();
+            VRightArm.Normalize();
+            VShoulderCenter.Normalize();
+
+            // do magic
+            float LeftCenterScal = (float)(VLeftArm * VShoulderCenter);
+            float RightCenterScal = (float)(VRightArm * VShoulderCenter);
+
+            //System.Console.WriteLine("Left " + LeftCenterScal + " Right " + RightCenterScal);
+
+            if (Math.Abs(LeftCenterScal) < 0.5 && Math.Abs(RightCenterScal) < 0.5)
+            {
+                // set person as flying and tracked
+                //System.Console.WriteLine("Person is tracked to fly!");
+                return true;
+            }
+            else
+            {
+                // untrack person
+                //System.Console.WriteLine("Person isnt tracked to fly!");
+                return false;
+            }
+        }
+
+
+        //private void SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
+        //{
+        //    using (SkeletonFrame CurrentSkeletonFrame = e.OpenSkeletonFrame())
+        //    {
+        //        if (CurrentSkeletonFrame != null && CurrentSkeletonFrame.SkeletonArrayLength > 0)
+        //        {
+        //            m_CurrentSkeletons = new Skeleton[CurrentSkeletonFrame.SkeletonArrayLength];
+
+        //            CurrentSkeletonFrame.CopySkeletonDataTo(m_CurrentSkeletons);
+
+        //            Skeleton CurrentSkeleton = m_CurrentSkeletons[0];
+
+        //            if (CurrentSkeleton.TrackingState == SkeletonTrackingState.Tracked)
+        //            {
+        //                if (m_ActualBodyState != BodyState.Tracked)
+        //                {
+        //                    SystemSounds.Beep.Play();
+        //                    m_Logs.Add("[User] user tracked\n");
+        //                }
+        //                m_ActualBodyState = BodyState.Tracked;
+
+        //                Joint ShoulderCenter;
+        //                Joint Hip;
+        //                Joint HandLeft;
+        //                Joint HandRight;
+        //                Joint Head;
+
+        //                ShoulderCenter = CurrentSkeleton.Joints[JointType.ShoulderCenter];
+        //                Hip = CurrentSkeleton.Joints[JointType.HipCenter];
+        //                HandLeft = CurrentSkeleton.Joints[JointType.HandLeft];
+        //                HandRight = CurrentSkeleton.Joints[JointType.HandRight];
+        //                Head = CurrentSkeleton.Joints[JointType.Head];
+
+        //                float LengthBetweenArms = Math.Abs(HandLeft.Position.X - HandRight.Position.X);
+        //                float TorsoHeight = Math.Abs(ShoulderCenter.Position.Y - Hip.Position.Y);
+
+        //                Vector VLeftArm = new Vector(HandLeft.Position.X - ShoulderCenter.Position.X, HandLeft.Position.Y - ShoulderCenter.Position.Y);
+        //                Vector VRightArm = new Vector(HandRight.Position.X - ShoulderCenter.Position.X, HandRight.Position.Y - ShoulderCenter.Position.Y);
+        //                Vector VShoulderCenter = new Vector(ShoulderCenter.Position.X - Hip.Position.X, ShoulderCenter.Position.Y - Hip.Position.Y);
+
+        //                VLeftArm.Normalize();
+        //                VRightArm.Normalize();
+        //                VShoulderCenter.Normalize();
+
+        //                float LeftCenterScal = (float)(VLeftArm * VShoulderCenter);
+        //                float RightCenterScal = (float)(VRightArm * VShoulderCenter);
+
+        //                //System.Console.WriteLine("Left " + LeftCenterScal + " Right " + RightCenterScal);
+
+        //                if (Math.Abs(LeftCenterScal) < 0.5 && Math.Abs(RightCenterScal) < 0.5)
+        //                {
+        //                    float h = ShoulderCenter.Position.Y - Hip.Position.Y;
+        //                    float n1 = ShoulderCenter.Position.Z - Hip.Position.Z;
+        //                    float n2 = ShoulderCenter.Position.X - Hip.Position.X;
+        //                    float n3 = Head.Position.Y - Hip.Position.Y;
+        //                    float n4 = Head.Position.X - Hip.Position.X;
+
+
+        //                    //fly position detected
+        //                    if (m_ArDrone.ActualState != CARDrone.State.Fly && m_ArDrone.ActualState != CARDrone.State.Error && !m_isTakeOff)
+        //                    {
+        //                        m_isTakeOff = true;
+        //                        m_NickOrientation = (float)(Math.Atan(n1 / h) * (360 / (2 * Math.PI)));
+        //                        m_RollOrientation = (float)(Math.Tan(n2 / h) * (360 / (2 * Math.PI)));
+        //                        m_ArDrone.TakeOff();
+        //                    }
+
+        //                    //float AngleNick = (float)(Math.Atan2(n1, h) * (360 / (2 * Math.PI)));
+        //                    //float AngleRoll = (float)(Math.Atan2(n2, h) * (360 / (2 * Math.PI)));
+
+        //                    float AngleNick = m_NickOrientation - (float)(Math.Atan(n1 / h) * (360 / (2 * Math.PI)));
+        //                    float AngleRoll = m_RollOrientation - (float)(Math.Tan(n2 / h) * (360 / (2 * Math.PI)));
+
+        //                    //System.Console.WriteLine("Nick " + AngleNick + " Roll " + AngleRoll);
+        //                    float Yaw = HandLeft.Position.Z - HandRight.Position.Z;
+
+        //                    //very risky but we can test it
+        //                    //m_ArDrone.Fly(angleRoll, angleNick, yaw, 0.0f);
+
+        //                    //not so risky but must be tested too
+        //                    //it can only be done one of these
+        //                    float CurrentRollOrientation = 0.0f;
+        //                    float CurrentNickOrientation = 0.0f;
+
+
+        //                    if (AngleNick > -DISTANCE_BARRIER)
+        //                    {
+        //                        //CurrentNickOrientation = -1.0f;
+        //                        CurrentNickOrientation = -AngleToARNorm(AngleNick);
+        //                    }
+        //                    else if (AngleNick < DISTANCE_BARRIER)
+        //                    {
+        //                        //CurrentNickOrientation = 1.0f;
+        //                        CurrentNickOrientation = -AngleToARNorm(AngleNick);
+        //                    }
+
+        //                    if (AngleRoll > DISTANCE_BARRIER)
+        //                    {
+        //                        //CurrentRollOrientation = -1.0f;
+        //                        CurrentRollOrientation = -AngleToARNorm(AngleRoll);
+        //                    }
+        //                    else if (AngleRoll < -DISTANCE_BARRIER)
+        //                    {
+        //                        //CurrentRollOrientation = 1.0f;
+        //                        CurrentRollOrientation = -AngleToARNorm(AngleRoll);
+        //                    }
+
+        //                    //m_Logs.Add("Nick: " + CurrentNickOrientation + "\n");
+
+        //                    m_ArDrone.Fly(CurrentNickOrientation, CurrentRollOrientation, 0.0f, 0.0f);
+
+        //                    //if (m_NickOrientation != CurrentNickOrientation)
+        //                    //{
+        //                    //    m_NickOrientation = CurrentNickOrientation;
+
+        //                    //    m_ArDrone.Pitch(m_NickOrientation);
+        //                    //}
+
+        //                    //if (m_RollOrientation != CurrentRollOrientation)
+        //                    //{
+        //                    //    m_RollOrientation = CurrentRollOrientation;
+
+        //                    //    m_ArDrone.Roll(m_RollOrientation);
+        //                    //}
+        //                }
+        //                else
+        //                {
+
+        //                    m_isTakeOff = false;
+        //                    m_ArDrone.Fly(0.0f, 0.0f, 0.0f, 0.0f);
+        //                    //land position detected
+        //                    m_ArDrone.Land();
+        //                }
+        //            }
+        //            else
+        //            {
+        //                if (m_ActualBodyState != BodyState.PositionOnly)
+        //                {
+        //                    m_ArDrone.Land();
+        //                }
+
+        //                m_ActualBodyState = BodyState.PositionOnly;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (m_ActualBodyState != BodyState.NotTracked)
+        //            {
+        //                m_ArDrone.Land();
+        //            }
+
+        //            m_ActualBodyState = BodyState.NotTracked;
+        //        }
+        //    }
+        //}
 
         private float AngleToARNorm(float _Angle)
         {
