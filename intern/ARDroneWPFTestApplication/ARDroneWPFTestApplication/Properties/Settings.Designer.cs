@@ -25,7 +25,7 @@ namespace ARDroneWPFTestApplication.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.01")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
         public string MaxAngleAR {
             get {
                 return ((string)(this["MaxAngleAR"]));
@@ -44,6 +44,18 @@ namespace ARDroneWPFTestApplication.Properties {
             }
             set {
                 this["MinAngleMK"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
+        public string MaxVerticalSpeed {
+            get {
+                return ((string)(this["MaxVerticalSpeed"]));
+            }
+            set {
+                this["MaxVerticalSpeed"] = value;
             }
         }
     }

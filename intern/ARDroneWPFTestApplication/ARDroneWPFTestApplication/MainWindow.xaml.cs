@@ -72,6 +72,15 @@ namespace ARDroneWPFTestApplication
             m_EnergyLevel.RunWorkerAsync();
         }
 
+        ~MainWindow()
+        {
+            m_ARDrone.Disconnect();
+
+            m_Kinect.DisableSkeletonStream();
+
+            m_Kinect.Disconnect();
+        }
+
         void EnergyLevelDoWork(object sender, DoWorkEventArgs e)
         {
             System.Threading.Thread.Sleep(2000);

@@ -82,9 +82,16 @@ namespace ARDroneWPFTestApplication
             return -1;
         }
 
-        private void SetMaxAngle(string _Angle = "0.11")
+        private void SetMaxAngle(string _Angle = "0.1")
         {
-            SetConfigurationCommand ConfCommand = new SetConfigurationCommand("control:euler_angle_max", _Angle);
+            SetConfigurationCommand ConfCommand = new SetConfigurationCommand("CONTROL:euler_angle_max", _Angle);
+
+            m_DroneController.SendCommand(ConfCommand);
+        }
+
+        private void SetVerticalSpeed(string _VerticalSpeed = "200.00000")
+        {
+            SetConfigurationCommand ConfCommand = new SetConfigurationCommand("CONTROL:control_vz_max", _VerticalSpeed);
 
             m_DroneController.SendCommand(ConfCommand);
         }
@@ -96,6 +103,10 @@ namespace ARDroneWPFTestApplication
             if (!m_DroneController.IsConnected) return;
             if (m_ActualState == State.Fly) return;
             if (m_ActualState == State.Error) return;
+
+            SetMaxAngle(Properties.Settings.Default.MaxAngleAR);
+
+            SetVerticalSpeed(Properties.Settings.Default.MaxVerticalSpeed);
 
             Command TakeOffCommand = new FlightModeCommand(DroneFlightMode.TakeOff);
 
@@ -218,10 +229,6 @@ namespace ARDroneWPFTestApplication
 
                 m_DroneController.Error += new DroneErrorEventHandler(DroneError);
 
-
-                SetMaxAngle(Properties.Settings.Default.MaxAngleAR);
-
-
                 m_Sender = new BackgroundWorker();
 
                 m_Sender.DoWork += new DoWorkEventHandler(SenderDoWork);
@@ -272,7 +279,10 @@ namespace ARDroneWPFTestApplication
                 {
                     m_ActualState = State.Fly;
 
-                    m_DroneController.SendCommand(m_CurrentCommand);
+                    if(m_DroneController.IsCommandPossible(m_CurrentCommand))
+                    {
+                        m_DroneController.SendCommand(m_CurrentCommand);
+                    }
 
                     m_CurrentCommand = null;
                 }

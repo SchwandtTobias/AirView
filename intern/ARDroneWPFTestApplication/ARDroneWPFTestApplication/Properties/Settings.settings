@@ -3,10 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="MaxAngleAR" Type="System.String" Scope="User">
-      <Value Profile="(Default)">0.01</Value>
+      <Value Profile="(Default)">0.1</Value>
     </Setting>
     <Setting Name="MinAngleMK" Type="System.Single" Scope="User">
       <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="MaxVerticalSpeed" Type="System.String" Scope="User">
+      <Value Profile="(Default)">200</Value>
     </Setting>
   </Settings>
 </SettingsFile>
