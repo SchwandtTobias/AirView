@@ -43,13 +43,15 @@ namespace ARDroneWPFTestApplication
 
             m_LastUpateTime = new DateTime();
 
-            m_UpdateInterval = 100;
+            m_UpdateInterval = 500;
 
             m_ARDrone = new CARDrone();
 
             m_Kinect = new CKinect(m_ARDrone);
 
             m_Logger = new BackgroundWorker();
+
+            m_Logger.DoWork += new DoWorkEventHandler(LoggerDoWork);
 
             m_Logger.RunWorkerCompleted += new RunWorkerCompletedEventHandler(LoggerRunWorkerCompleted);
 
@@ -72,25 +74,16 @@ namespace ARDroneWPFTestApplication
 
         void EnergyLevelDoWork(object sender, DoWorkEventArgs e)
         {
-            long TimeBetweenUpdates = (DateTime.Now.Ticks - m_LastUpateTime.Ticks) / TimeSpan.TicksPerMillisecond;
-
-            if (TimeBetweenUpdates > m_UpdateInterval)
-            {
-                m_LastUpateTime = DateTime.Now;
-
-                float BatteryLevel = m_ARDrone.EnergyLevel();
-
-                //this.Dispatcher.Invoke(new Action(() =>
-                {
-                    //pbARBatteryLevel.Value = BatteryLevel;
-                }
-                //));
-            }
+            System.Threading.Thread.Sleep(2000);
         }
 
         void EnergyLevelRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            // m_EnergyLevel.RunWorkerAsync();
+            float BatteryLevel = m_ARDrone.EnergyLevel();
+            
+            pbARBatteryLevel.Value = BatteryLevel;
+
+            m_EnergyLevel.RunWorkerAsync();
         }
 
         private void StartEngineRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -105,11 +98,16 @@ namespace ARDroneWPFTestApplication
             StartSkeletonTrackingMK();
         }
 
+        private void LoggerDoWork(object sender, DoWorkEventArgs e)
+        {
+            System.Threading.Thread.Sleep(1000);
+        }
+
         private void LoggerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             TextBoxLog.Text = m_Kinect.GetLogs();
 
-            //m_Logger.RunWorkerAsync();
+            m_Logger.RunWorkerAsync();
         }
 
         private void btARConnect_Click(object sender, RoutedEventArgs e)
