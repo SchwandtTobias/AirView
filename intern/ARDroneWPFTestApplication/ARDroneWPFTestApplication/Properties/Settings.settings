@@ -1,7 +1,12 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ARDroneWPFTestApplication.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="MaxAngleAR" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.01</Value>
+    </Setting>
+    <Setting Name="MinAngleMK" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

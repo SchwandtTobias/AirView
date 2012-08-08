@@ -13,6 +13,8 @@ namespace ARDroneWPFTestApplication
     using System.ComponentModel;
     using System.Threading;
 
+    using System.Configuration;
+
     public class CARDrone
     {
         // --------------------------------------------------------------------------------
@@ -80,6 +82,13 @@ namespace ARDroneWPFTestApplication
             return -1;
         }
 
+        private void SetMaxAngle(string _Angle = "0.11")
+        {
+            SetConfigurationCommand ConfCommand = new SetConfigurationCommand("control:euler_angle_max", _Angle);
+
+            m_DroneController.SendCommand(ConfCommand);
+        }
+
         #region FlyModeCommands
 
         public void TakeOff()
@@ -87,8 +96,6 @@ namespace ARDroneWPFTestApplication
             if (!m_DroneController.IsConnected) return;
             if (m_ActualState == State.Fly) return;
             if (m_ActualState == State.Error) return;
-
-            m_Commands.Clear();
 
             Command TakeOffCommand = new FlightModeCommand(DroneFlightMode.TakeOff);
 
@@ -104,8 +111,6 @@ namespace ARDroneWPFTestApplication
             if (m_ActualState == State.Land) return;
             if (m_ActualState == State.Error) return;
 
-            m_Commands.Clear();
-
             Command LandCommand = new FlightModeCommand(DroneFlightMode.Land);
 
             m_DroneController.SendCommand(LandCommand);
@@ -117,8 +122,6 @@ namespace ARDroneWPFTestApplication
         {
             if (m_ActualState == State.Error) return;
 
-            m_Commands.Clear();
-
             Command command = new FlightModeCommand(DroneFlightMode.Reset);
 
             m_DroneController.SendCommand(command);
@@ -128,12 +131,15 @@ namespace ARDroneWPFTestApplication
 
         public void Emergency()
         {
-            m_Commands.Clear();
-
             Command command = new FlightModeCommand(DroneFlightMode.Emergency);
 
             m_DroneController.SendCommand(command);
 
+        }
+
+        public float EnergyLevel()
+        {
+            return (float)m_DroneController.NavigationData.BatteryLevel;
         }
         #endregion
 
@@ -153,41 +159,6 @@ namespace ARDroneWPFTestApplication
             m_ListLock.ReleaseMutex();
         }
 
-        public void Pitch(float _Direction = 1.0f)
-        {
-            if (!m_DroneController.IsFlying) return;
-            if (m_ActualState == State.Error) return;
-
-            Command command = new FlightMoveCommand(0.0f, _Direction * 0.5f, 0.0f, 0.0f);
-            AddCommand(command);
-        }
-
-        public void Roll(float _Direction = 1.0f)
-        {
-            if (!m_DroneController.IsFlying) return;
-            if (m_ActualState == State.Error) return;
-
-            Command command = new FlightMoveCommand(_Direction * 0.5f, 0.0f, 0.0f, 0.0f);
-            AddCommand(command);
-        }
-
-        public void Yaw(float _Direction = 1.0f)
-        {
-            if (!m_DroneController.IsFlying) return;
-            if (m_ActualState == State.Error) return;
-
-            Command command = new FlightMoveCommand(0.0f, 0.0f, _Direction * 0.5f, 0.0f);
-            AddCommand(command);
-        }
-
-        public void Gaz(float _Direction = 1.0f)
-        {
-            if (!m_DroneController.IsFlying) return;
-            if (m_ActualState == State.Error) return;
-
-            Command command = new FlightMoveCommand(0.0f, 0.0f, 0.0f, _Direction * 0.1f);
-            AddCommand(command);
-        }
         #endregion
 
         // --------------------------------------------------------------------------------
@@ -195,8 +166,6 @@ namespace ARDroneWPFTestApplication
         // --------------------------------------------------------------------------------
 
         private DroneControl        m_DroneController;
-
-        private List<Command>       m_Commands;
 
         private BackgroundWorker    m_Sender;
 
@@ -214,13 +183,9 @@ namespace ARDroneWPFTestApplication
 
         private string              m_RouterName;
 
-        private int                 m_NumberOfCommands;
-
-        private const int           c_MaxNumberOfCommands = 2;
-
         private Command             m_CurrentCommand;
 
-        private bool m_IsCameraOnline;
+        private bool                m_IsCameraOnline;
 
 
         public CARDrone()
@@ -233,8 +198,6 @@ namespace ARDroneWPFTestApplication
 
             m_UpdateInterval = 100;
 
-            m_NumberOfCommands = 0;
-
             m_RouterName = "ardrone_";
 
             m_CurrentCommand = null;
@@ -243,8 +206,6 @@ namespace ARDroneWPFTestApplication
 
             try
             {
-                m_Commands = new List<Command>(c_MaxNumberOfCommands);
-
                 DroneConfig RouterConfig = new DroneConfig();
 
                 RouterConfig.StandardOwnIpAddress = m_OwnIPAddress;
@@ -256,6 +217,9 @@ namespace ARDroneWPFTestApplication
                 m_DroneController.NetworkConnectionStateChanged += new DroneNetworkConnectionStateChangedEventHandler(NetworkConnectionStateChanged);
 
                 m_DroneController.Error += new DroneErrorEventHandler(DroneError);
+
+
+                SetMaxAngle(Properties.Settings.Default.MaxAngleAR);
 
 
                 m_Sender = new BackgroundWorker();
@@ -317,8 +281,6 @@ namespace ARDroneWPFTestApplication
                     m_ActualState = State.Hover;
                 }
 
-                m_NumberOfCommands = 0;
-
                 m_ListLock.ReleaseMutex();
             }
         }
@@ -334,19 +296,5 @@ namespace ARDroneWPFTestApplication
                 m_ActualState = State.Disconnected;
             }
         }
-
-        private void AddCommand(Command _Command)
-        {
-            m_ListLock.WaitOne(1000);
-
-            int IndeOfCommand = m_NumberOfCommands % c_MaxNumberOfCommands;
-
-            m_Commands.Insert(IndeOfCommand, _Command);
-
-            ++ m_NumberOfCommands;
-
-            m_ListLock.ReleaseMutex();
-        }
-
     }
 }
