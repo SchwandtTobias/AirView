@@ -191,9 +191,6 @@ namespace ARDroneWPFTestApplication
         private void TakeOffARDrone()
         {
             m_ARDrone.TakeOff();
-
-            slARNick.IsEnabled = true;
-            slARRoll.IsEnabled = true;
         }
 
         private void btARStop_Click(object sender, RoutedEventArgs e)
@@ -214,9 +211,6 @@ namespace ARDroneWPFTestApplication
         private void LandARDrone()
         {
             m_ARDrone.Land();
-
-            slARNick.IsEnabled = false;
-            slARRoll.IsEnabled = false;
         }
 
         private void btARPicture_Click(object sender, RoutedEventArgs e)
@@ -241,11 +235,11 @@ namespace ARDroneWPFTestApplication
 
         private void cbARMaster_Click(object sender, RoutedEventArgs e)
         {
-            m_Kinect.IsActive = false;
+            m_Kinect.IsActive = true;
 
             if (cbARMaster.IsChecked == true)
             {
-                m_Kinect.IsActive = true;
+                m_Kinect.IsActive = false;
             }
         }
 
@@ -354,12 +348,12 @@ namespace ARDroneWPFTestApplication
 
         private void btMKAngleUp_Click(object sender, RoutedEventArgs e)
         {
-            m_Kinect.ChangeViewAngle(m_Kinect.GetViewAngle() + 2);
+            m_Kinect.ChangeViewAngle(m_Kinect.GetViewAngle() + 10);
         }
 
         private void btMKAngleDown_Click(object sender, RoutedEventArgs e)
         {
-            m_Kinect.ChangeViewAngle(m_Kinect.GetViewAngle() - 2);
+            m_Kinect.ChangeViewAngle(m_Kinect.GetViewAngle() - 10);
         }
 
         private void TextBoxLog_SizeChanged(object sender, SizeChangedEventArgs e)

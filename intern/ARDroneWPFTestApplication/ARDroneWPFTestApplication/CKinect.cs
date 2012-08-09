@@ -194,6 +194,8 @@ namespace ARDroneWPFTestApplication
 
             m_Logs = new List<String>(200);
 
+            m_IsActive = true;
+
             try
             {
                 m_KinectSensor = KinectSensor.KinectSensors[0];
