@@ -117,6 +117,11 @@ namespace ARDroneWPFTestApplication
            
         }
 
+        public int GetViewAngle()
+        {
+            return m_KinectSensor.ElevationAngle;
+        }
+
         public BitmapSource GetSkeletonPictureContext()
         {
             return m_DepthImageSource;
@@ -140,6 +145,18 @@ namespace ARDroneWPFTestApplication
             DISTANCE_BARRIER = _Angle;
         }
 
+        public bool IsActive
+        {
+            get
+            {
+                return m_IsActive;
+            }
+            set
+            {
+                m_IsActive = value;
+            }
+        }
+
         private KinectSensor m_KinectSensor;
 
         private CARDrone     m_ArDrone;
@@ -156,10 +173,9 @@ namespace ARDroneWPFTestApplication
 
         private bool         m_isTakeOff;
 
-        private List<String> m_Logs;
+        private bool         m_IsActive;
 
-        private float        m_GlobalRoll;
-        private float        m_GlobalNick;
+        private List<String> m_Logs;
 
 
         public CKinect(CARDrone _ArDrone)
@@ -248,6 +264,8 @@ namespace ARDroneWPFTestApplication
 
         private void SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
+            if (!m_IsActive) return;
+
             Skeleton[] skeletons = new Skeleton[0];
 
             using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
@@ -269,7 +287,7 @@ namespace ARDroneWPFTestApplication
                 {
                     if (Skeleton.TrackingState == SkeletonTrackingState.Tracked)
                     {
-                        if (this.isSkeletonAllowedToControl(Skeleton))
+                        if (IsSkeletonAllowedToControl(Skeleton))
                         {
                             CurrentSkeleton = Skeleton;
                             break;
@@ -296,7 +314,7 @@ namespace ARDroneWPFTestApplication
                         m_NickOrientation = (float)(Math.Atan(n1 / h) * (360 / (2 * Math.PI)));
                         m_RollOrientation = (float)(Math.Tan(n2 / h) * (360 / (2 * Math.PI)));
 
-                        this.sendTakeOffCommandToDrone();
+                        SendTakeOffCommandToDrone();
                     }
 
                     // send take of to drone
@@ -346,17 +364,17 @@ namespace ARDroneWPFTestApplication
                 }
                 else
                 {
-                    this.sendLandingCommandToDrone();
+                    SendLandingCommandToDrone();
                 }
             }
             else
             {
-                this.sendLandingCommandToDrone();
+                SendLandingCommandToDrone();
             }
             
         }
 
-        private void sendTakeOffCommandToDrone()
+        private void SendTakeOffCommandToDrone()
         {
             m_isTakeOff = true;
 
@@ -370,11 +388,11 @@ namespace ARDroneWPFTestApplication
             }
             catch (Exception exeption)
             {
-                // do something
+                // do something 
             }
         }
 
-        private void sendLandingCommandToDrone()
+        private void SendLandingCommandToDrone()
         {
             m_isTakeOff = false;
 
@@ -393,7 +411,7 @@ namespace ARDroneWPFTestApplication
             }
         }
 
-        private bool isSkeletonAllowedToControl(Skeleton CurrentSkeleton)
+        private bool IsSkeletonAllowedToControl(Skeleton CurrentSkeleton)
         {
             // get needed tacking points to calculate gestures
             Joint ShoulderCenter = CurrentSkeleton.Joints[JointType.ShoulderCenter];

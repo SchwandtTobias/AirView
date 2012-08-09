@@ -19,15 +19,20 @@
                 <Button Content="Land" Height="23" HorizontalAlignment="Left" Margin="6,128,0,0" Name="btARLand" VerticalAlignment="Top" Width="75" Click="btARLand_Click" IsEnabled="False" />
                 <Button Content="Trim" HorizontalAlignment="Left" Margin="96,172,0,0" Name="btARTrim" Width="146" Click="btARTrim_Click" Height="23" VerticalAlignment="Top" IsEnabled="False" />
                 <Rectangle Fill="Red" Height="23" HorizontalAlignment="Left" Margin="216,6,0,0" Name="ARDroneStatusIndicator" Stroke="Black" VerticalAlignment="Top" Width="26" />
-                <Slider Height="23" HorizontalAlignment="Left" Margin="96,80,0,0" Name="slARNick" VerticalAlignment="Top" Width="146" ValueChanged="slARNick_ValueChanged" Maximum="1" Minimum="-1" TickPlacement="BottomRight" SmallChange="0.01" IsEnabled="False" PreviewMouseLeftButtonUp="slARNick_PreviewMouseLeftButtonUp" />
-                <Label Content="Nick:" HorizontalAlignment="Left" Margin="87,58,0,74" Name="lbARNick" />
-                <Slider Height="23" HorizontalAlignment="Left" Margin="96,123,0,0" Name="slARRoll" VerticalAlignment="Top" Width="146" ValueChanged="slARRoll_ValueChanged" Maximum="1" Minimum="-1" SmallChange="0.01" TickPlacement="BottomRight" IsEnabled="False" PreviewMouseLeftButtonUp="slARRoll_PreviewMouseLeftButtonUp" />
-                <Label Content="Roll:" Height="28" HorizontalAlignment="Left" Margin="87,102,0,0" Name="lbARRoll" VerticalAlignment="Top" />
+                <Slider Height="23" HorizontalAlignment="Left" Margin="129,66,0,0" Name="slARNick" VerticalAlignment="Top" Width="113" Maximum="1" Minimum="-1" TickPlacement="BottomRight" SmallChange="0.01" IsEnabled="False" ValueChanged="slARMove_ValueChanged" PreviewMouseLeftButtonUp="slARNick_PreviewMouseLeftButtonUp" />
+                <Label Content="Nick:" HorizontalAlignment="Left" Margin="87,59,0,138" Name="lbARNick" />
+                <Slider HorizontalAlignment="Left" Margin="129,90,0,0" Name="slARRoll" Width="113" Maximum="1" Minimum="-1" SmallChange="0.01" TickPlacement="BottomRight" IsEnabled="False" Height="23" VerticalAlignment="Top" ValueChanged="slARMove_ValueChanged" PreviewMouseLeftButtonUp="slARRoll_PreviewMouseLeftButtonUp" />
+                <Label Content="Roll:" Height="28" HorizontalAlignment="Left" Margin="87,85,0,0" Name="lbARRoll" VerticalAlignment="Top" />
                 <Button Content="Picture" Height="23" HorizontalAlignment="Left" Margin="6,172,0,0" Name="btARPicture" VerticalAlignment="Top" Width="75" Click="btARPicture_Click" IsEnabled="False" />
-                <TextBox Margin="96,34,48,0" Name="tbARIPAddress" MaxLength="15" Text="192.168.1.1" CharacterCasing="Lower" Height="21" VerticalAlignment="Top" IsEnabled="False" />
-                <TextBox CharacterCasing="Lower" Height="21" Margin="96,8,48,0" MaxLength="15" Name="tbOwnIPAddress" Text="192.168.1.3" VerticalAlignment="Top" />
+                <TextBox Margin="96,34,81,0" Name="tbARIPAddress" MaxLength="15" Text="192.168.1.1" CharacterCasing="Lower" Height="21" VerticalAlignment="Top" IsEnabled="False" />
+                <TextBox CharacterCasing="Lower" Height="21" Margin="96,8,81,0" MaxLength="15" Name="tbOwnIPAddress" Text="192.168.1.3" VerticalAlignment="Top" />
                 <Button Content="Disconnect" Height="23" HorizontalAlignment="Left" IsEnabled="False" Margin="6,33,0,0" Name="btARDisconnet" VerticalAlignment="Top" Width="75" Click="btARDisconnet_Click" />
                 <ProgressBar Height="10" HorizontalAlignment="Left" Margin="6,203,0,0" Name="pbARBatteryLevel" VerticalAlignment="Top" Width="236" />
+                <Slider Height="23" HorizontalAlignment="Left" IsEnabled="True" Margin="129,114,0,0" Maximum="1" Minimum="-1" Name="slARHeight" SmallChange="0.01" TickPlacement="BottomRight" VerticalAlignment="Top" Width="113" ValueChanged="slARMove_ValueChanged" PreviewMouseLeftButtonUp="slARHeight_PreviewMouseLeftButtonUp" />
+                <Label Content="Height:" Height="28" HorizontalAlignment="Left" Margin="87,109,0,0" Name="lbARHeight" VerticalAlignment="Top" />
+                <Slider Height="23" HorizontalAlignment="Left" IsEnabled="True" Margin="129,137,0,0" Maximum="1" Minimum="-1" Name="slARYaw" SmallChange="0.01" TickPlacement="BottomRight" VerticalAlignment="Top" Width="113" ValueChanged="slARMove_ValueChanged" PreviewMouseLeftButtonUp="slARYaw_PreviewMouseLeftButtonUp" />
+                <Label Content="Yaw:" Height="28" HorizontalAlignment="Left" Margin="87,132,0,0" Name="lbARYaw" VerticalAlignment="Top" />
+                <CheckBox Content="Master?" Height="16" HorizontalAlignment="Left" Margin="179,37,0,0" Name="cbARMaster" VerticalAlignment="Top" Click="cbARMaster_Click" />
             </Grid>
         </GroupBox>
         <GroupBox Header="Kinect" Margin="260,0,6,118" Name="gbKinect">
@@ -37,10 +42,11 @@
                 <Button Content="Track" Height="23" HorizontalAlignment="Left" Margin="6,52,0,0" Name="btStart" VerticalAlignment="Top" Width="75" Click="btStart_Click" IsEnabled="False" />
                 <Button Content="Stop Track" Height="23" HorizontalAlignment="Left" Margin="6,81,0,0" Name="btMKStopTrack" VerticalAlignment="Top" Width="75" Click="btMKStopTrack_Click" IsEnabled="False" />
                 <Button Content="Picture" Height="23" HorizontalAlignment="Left" Margin="6,158,0,0" Name="btMKPicture" VerticalAlignment="Top" Width="75" Click="btMKPicture_Click" IsEnabled="False" />
-                <Label Content="Angle:" Height="28" HorizontalAlignment="Left" Margin="87,40,0,0" Name="lbMKAngle" VerticalAlignment="Top" />
-                <Slider Height="23" HorizontalAlignment="Left" Margin="95,61,0,0" Name="slMKAngle" VerticalAlignment="Top" Width="129" ValueChanged="slMKAngle_ValueChanged" Maximum="20" Minimum="-20" SmallChange="1" IsEnabled="False" />
+                <Label Content="Angle:" Height="28" HorizontalAlignment="Left" Margin="135,32,0,0" Name="lbMKAngle" VerticalAlignment="Top" />
                 <Button Content="Disconnect" Height="23" HorizontalAlignment="Left" Margin="6,110,0,0" Name="btMKDisconnect" VerticalAlignment="Top" Width="75" Click="btMKDisconnect_Click" IsEnabled="False" />
                 <Image Margin="95,93,6,10" Name="imgMKSkeletonBox" Stretch="Fill" />
+                <Button Content="Up" Height="23" HorizontalAlignment="Left" Margin="182,34,0,0" Name="btMKAngleUp" VerticalAlignment="Top" Width="75" Click="btMKAngleUp_Click" />
+                <Button Content="Down" Height="23" HorizontalAlignment="Left" Margin="182,59,0,0" Name="btMKAngleDown" VerticalAlignment="Top" Width="75" Click="btMKAngleDown_Click" />
             </Grid>
         </GroupBox>
     </Grid>

@@ -33,21 +33,19 @@ namespace ARDroneWPFTestApplication
 
         private BackgroundWorker m_StartEngine;
 
-        private DateTime m_LastUpateTime;
-
-        private long m_UpdateInterval;
-
         public MainWindow()
         {
             InitializeComponent();
 
-            m_LastUpateTime = new DateTime();
-
-            m_UpdateInterval = 500;
+            // Init AR.Drone
 
             m_ARDrone = new CARDrone();
 
+            // Init Kinect
+
             m_Kinect = new CKinect(m_ARDrone);
+
+            // Init background worker
 
             m_Logger = new BackgroundWorker();
 
@@ -74,11 +72,16 @@ namespace ARDroneWPFTestApplication
 
         ~MainWindow()
         {
-            m_ARDrone.Disconnect();
+            try
+            {
+                DisconnectARDrone();
 
-            m_Kinect.DisableSkeletonStream();
+                StopSkeletonTrackingMK();
 
-            m_Kinect.Disconnect();
+                DisconnectMK();
+            }
+            catch(Exception ex)
+            {}
         }
 
         void EnergyLevelDoWork(object sender, DoWorkEventArgs e)
@@ -97,14 +100,19 @@ namespace ARDroneWPFTestApplication
 
         private void StartEngineRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            // Connect AR.Drone
-            ConnectARDrone();
+            try
+            {
+                // Connect AR.Drone
+                ConnectARDrone();
 
-            // Connect MK
-            ConnectMK();
+                // Connect MK
+                ConnectMK();
 
-            // Start Tracking
-            StartSkeletonTrackingMK();
+                // Start Tracking
+                StartSkeletonTrackingMK();
+            }
+            catch(Exception ex)
+            {}
         }
 
         private void LoggerDoWork(object sender, DoWorkEventArgs e)
@@ -226,19 +234,44 @@ namespace ARDroneWPFTestApplication
             m_ARDrone.Trim();
         }
 
-        private void slARRoll_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            m_ARDrone.Fly((float)slARNick.Value, (float)slARRoll.Value, 0.0f, 0.0f);
-        }
-
-        private void slARNick_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            m_ARDrone.Fly((float)slARNick.Value, (float)slARRoll.Value, 0.0f, 0.0f);
-        }
-
         private void btMKConnect_Click(object sender, RoutedEventArgs e)
         {
             ConnectMK();
+        }
+
+        private void cbARMaster_Click(object sender, RoutedEventArgs e)
+        {
+            m_Kinect.IsActive = false;
+
+            if (cbARMaster.IsChecked == true)
+            {
+                m_Kinect.IsActive = true;
+            }
+        }
+
+        private void slARMove_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            m_ARDrone.Fly((float)slARNick.Value, (float)slARRoll.Value, (float)slARYaw.Value, (float)slARHeight.Value);
+        }
+
+        private void slARYaw_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            slARYaw.Value = 0.0f;
+        }
+
+        private void slARHeight_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            slARHeight.Value = 0.0f;
+        }
+
+        private void slARNick_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            slARNick.Value = 0.0f;
+        }
+
+        private void slARRoll_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            slARRoll.Value = 0.0f;
         }
 
         private void ConnectMK()
@@ -252,7 +285,8 @@ namespace ARDroneWPFTestApplication
             btMKDisconnect.IsEnabled = true;
             btMKConnect.IsEnabled = false;
             btMKPicture.IsEnabled = true;
-            slMKAngle.IsEnabled = true;
+            btMKAngleDown.IsEnabled = true;
+            btMKAngleUp.IsEnabled = true;
         }
 
         private void btStart_Click(object sender, RoutedEventArgs e)
@@ -289,14 +323,7 @@ namespace ARDroneWPFTestApplication
 
         private void btMKPicture_Click(object sender, RoutedEventArgs e)
         {
-
             imgMKSkeletonBox.Source = m_Kinect.GetSkeletonPictureContext();
-
-        }
-
-        private void slMKAngle_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            m_Kinect.ChangeViewAngle((int)(e.NewValue));
         }
 
         private void btMKDisconnect_Click(object sender, RoutedEventArgs e)
@@ -321,22 +348,23 @@ namespace ARDroneWPFTestApplication
             btMKConnect.IsEnabled = true;
             btStart.IsEnabled = false;
             btMKPicture.IsEnabled = false;
-            slMKAngle.IsEnabled = false;
+            btMKAngleDown.IsEnabled = false;
+            btMKAngleUp.IsEnabled = false;
+        }
+
+        private void btMKAngleUp_Click(object sender, RoutedEventArgs e)
+        {
+            m_Kinect.ChangeViewAngle(m_Kinect.GetViewAngle() + 2);
+        }
+
+        private void btMKAngleDown_Click(object sender, RoutedEventArgs e)
+        {
+            m_Kinect.ChangeViewAngle(m_Kinect.GetViewAngle() - 2);
         }
 
         private void TextBoxLog_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             svScrollView.ScrollToEnd();
-        }
-
-        private void slARNick_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            slARNick.Value = 0.0f;
-        }
-
-        private void slARRoll_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            slARRoll.Value = 0.0f;
         }
     }
 }

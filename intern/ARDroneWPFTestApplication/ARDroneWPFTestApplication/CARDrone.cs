@@ -18,6 +18,13 @@ namespace ARDroneWPFTestApplication
     public class CARDrone
     {
         // --------------------------------------------------------------------------------
+        // Const
+        // --------------------------------------------------------------------------------
+
+        const int SEND_INTERVAL = 100;
+
+
+        // --------------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------------
 
@@ -61,6 +68,8 @@ namespace ARDroneWPFTestApplication
             m_ARIPAddress = _ARIPAddress;
         }
 
+        #region CameraCommands
+
         public int VideoStream(out System.Drawing.Bitmap _Stream)
         {
             _Stream = null;
@@ -82,6 +91,10 @@ namespace ARDroneWPFTestApplication
             return -1;
         }
 
+        #endregion
+
+        #region ConfigurationCommands
+
         private void SetMaxAngle(string _Angle = "0.1")
         {
             SetConfigurationCommand ConfCommand = new SetConfigurationCommand("CONTROL:euler_angle_max", _Angle);
@@ -96,6 +109,8 @@ namespace ARDroneWPFTestApplication
             m_DroneController.SendCommand(ConfCommand);
         }
 
+        #endregion
+
         #region FlyModeCommands
 
         public void TakeOff()
@@ -103,6 +118,8 @@ namespace ARDroneWPFTestApplication
             if (!m_DroneController.IsConnected) return;
             if (m_ActualState == State.Fly) return;
             if (m_ActualState == State.Error) return;
+
+            //Trim();
 
             SetMaxAngle(Properties.Settings.Default.MaxAngleAR);
 
@@ -113,14 +130,12 @@ namespace ARDroneWPFTestApplication
             m_DroneController.SendCommand(TakeOffCommand);
 
             m_ActualState = State.Hover;
-
         }
 
         public void Land()
         {
             if (!m_DroneController.IsFlying) return;
             if (m_ActualState == State.Land) return;
-            if (m_ActualState == State.Error) return;
 
             Command LandCommand = new FlightModeCommand(DroneFlightMode.Land);
 
@@ -184,10 +199,6 @@ namespace ARDroneWPFTestApplication
 
         private State               m_ActualState;
 
-        private DateTime            m_LastUpateTime;
-
-        private long                m_UpdateInterval;
-
         private string              m_OwnIPAddress;
 
         private string              m_ARIPAddress;
@@ -204,10 +215,6 @@ namespace ARDroneWPFTestApplication
             m_ListLock = new Mutex();
 
             m_ActualState = State.Disconnected;
-
-            m_LastUpateTime = new DateTime();
-
-            m_UpdateInterval = 100;
 
             m_RouterName = "ardrone_";
 
@@ -245,41 +252,29 @@ namespace ARDroneWPFTestApplication
 
         ~CARDrone()
         {
-            if (m_ActualState != State.Error && m_ActualState != State.Land)
-            {
-                m_ActualState = State.Disconnected;
-                Land();
-            }
-            m_DroneController.Disconnect();
+            Land();
+
+            Disconnect();
         }
 
         private void DroneError(object sender, DroneErrorEventArgs e)
         {
             m_ActualState = State.Error;
+
             Emergency();
         }
 
         private void SenderRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            m_Sender.RunWorkerAsync();
-        }
-
-        private void SenderDoWork(object sender, DoWorkEventArgs e)
-        {
-            long TimeBetweenUpdates = (DateTime.Now.Ticks - m_LastUpateTime.Ticks) / TimeSpan.TicksPerMillisecond;
-
-
-            if (TimeBetweenUpdates > m_UpdateInterval && m_ActualState != State.Land || m_ActualState != State.Disconnected)
+            if (m_ActualState == State.Hover || m_ActualState == State.Fly)
             {
-                m_LastUpateTime = DateTime.Now;
-
                 m_ListLock.WaitOne(1000);
 
                 if (m_CurrentCommand != null)
                 {
                     m_ActualState = State.Fly;
 
-                    if(m_DroneController.IsCommandPossible(m_CurrentCommand))
+                    if (m_DroneController.IsCommandPossible(m_CurrentCommand))
                     {
                         m_DroneController.SendCommand(m_CurrentCommand);
                     }
@@ -293,6 +288,14 @@ namespace ARDroneWPFTestApplication
 
                 m_ListLock.ReleaseMutex();
             }
+
+            // restart background worker
+            m_Sender.RunWorkerAsync();
+        }
+
+        private void SenderDoWork(object sender, DoWorkEventArgs e)
+        {
+            System.Threading.Thread.Sleep(SEND_INTERVAL);
         }
 
         private void NetworkConnectionStateChanged(object sender, DroneNetworkConnectionStateChangedEventArgs e)
